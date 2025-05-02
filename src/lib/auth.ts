@@ -18,7 +18,6 @@ export const authOptions: NextAuthOptions = {
         const { user, pass } = credentials!;
 
         const admin = await Administrator.findOne({ user });
-        console.log("Admin: ", admin);
 
         if (!admin) {
           throw new Error("Utilizador não encontrado");
@@ -48,7 +47,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        console.log("Return: ", user);
         token.id = user.id;
         token.type = user.type;
         token.name = user.name;
