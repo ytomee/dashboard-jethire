@@ -1,4 +1,4 @@
-// middleware.ts
+/*
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
@@ -7,11 +7,11 @@ const PUBLIC_PATHS = [
   '/signin',
   '/signup',
   '/public',
+  '/lib',
   '/api',
   '/_next',
   '/favicon.ico',
-  '/images',
-  '/lib'
+  '/images'
 ];
 
 export async function middleware(req: NextRequest) {
@@ -35,3 +35,4 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: ['/:path*'],
 };
+*/
