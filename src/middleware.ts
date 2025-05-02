@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/_next',
   '/favicon.ico',
   '/images',
+  '/lib'
 ];
 
 export async function middleware(req: NextRequest) {
