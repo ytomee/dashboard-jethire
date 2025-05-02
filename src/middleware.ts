@@ -14,6 +14,7 @@ const PUBLIC_PATHS = [
 ];
 
 export async function middleware(req: NextRequest) {
+  /*
   const { pathname } = req.nextUrl;
 
   const isPublic = PUBLIC_PATHS.some((path) =>
@@ -27,6 +28,7 @@ export async function middleware(req: NextRequest) {
     const signInUrl = new URL('/signin', req.url);
     return NextResponse.redirect(signInUrl);
   }
+  */
 
   return NextResponse.next();
 }
