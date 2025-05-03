@@ -18,10 +18,10 @@ export default function SignInForm() {
     e.preventDefault();
 
     const res = await signIn("credentials", {
-      user, 
-      pass, 
-      redirect: false,
-    });
+      user,
+      pass,
+      callbackUrl: "/",
+    });    
 
     if (res?.error) {
       alert(res.error || "Erro ao autenticar");
