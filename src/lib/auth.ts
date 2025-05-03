@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
         const { user, pass } = credentials!;
 
         const admin = await Administrator.findOne({ user });
+        console.log(admin);
 
         if (!admin) {
           throw new Error("Utilizador não encontrado");
