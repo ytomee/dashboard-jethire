@@ -31,11 +31,11 @@ export async function middleware(req: NextRequest) {
   if (!token) {
     const signInUrl = new URL('/signin', req.url);
     return NextResponse.redirect(signInUrl);
-  } else {
-    return NextResponse.next();
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/:path*'],
+  matcher: ['/((?!api|_next|favicon.ico|images|public|lib).*)'],
 };
