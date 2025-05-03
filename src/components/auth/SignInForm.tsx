@@ -26,7 +26,7 @@ export default function SignInForm() {
     if (res?.error) {
       alert(res.error || "Erro ao autenticar");
     } else {
-      router.push("/");
+      alert("Login com sucesso!");
     }
   };
 
