@@ -32,13 +32,12 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       await company.save();
   
       // Enviar o token por email para o responsável
-      const debugEmail = await resend.emails.send({
+      await resend.emails.send({
         from: process.env.RESEND_FROM!,
         to: company.responsibleEmail,
         subject: `A sua empresa ${company.companyName} foi validada!`,
         react: ValidationEmail({ companyName: company.companyName, token: rawToken }),
       });
-      console.log(debugEmail);
   
       return NextResponse.json({ message: "Empresa validada e email enviado com sucesso" });
     } catch (error) {
