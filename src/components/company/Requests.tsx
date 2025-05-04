@@ -3,7 +3,24 @@ import React, { useEffect, useState } from "react";
 import { CircleCheck, CircleX, Award, MapPin, MonitorSmartphone, UserRoundSearch } from "@/icons";
 
 export const Requests = () => {
-  const [companies, setCompanies] = useState<any[]>([]);
+
+  interface Company {
+    companyName: string;
+    nif: string;
+    yearOfEstablishment: number;
+    status: string;
+    country: string;
+    city: string;
+    address: string;
+    generalEmail: string;
+    phone: string;
+    website: string;
+    responsiblePerson: string;
+    responsibleEmail: string;
+    responsiblePhone: string;
+  }
+  
+  const [companies, setCompanies] = useState<Company[]>([]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
