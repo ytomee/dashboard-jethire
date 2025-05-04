@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import connectDB from "@/lib/dbConnect";
 import CompanyRequest from "@/models/companyRequest";
 import { Resend } from "resend";
-// import ValidationEmail from "@/emails/ValidationEmail";
+import ValidationEmail from "@/emails/ValidationEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -32,14 +32,13 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       await company.save();
   
       // Enviar o token por email para o responsável
-      /*
-      await resend.emails.send({
+      const debugEmail = await resend.emails.send({
         from: process.env.RESEND_FROM!,
         to: company.responsibleEmail,
         subject: `A sua empresa ${company.companyName} foi validada!`,
         react: ValidationEmail({ companyName: company.companyName, token: rawToken }),
       });
-      */
+      console.log(debugEmail);
   
       return NextResponse.json({ message: "Empresa validada e email enviado com sucesso" });
     } catch (error) {
