@@ -3,7 +3,7 @@ import React from "react";
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, Briefcase, UsersRound, Building2 } from "@/icons";
 
-export const EcommerceMetrics = () => {
+export const Metrics = () => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {/* <!-- Metric Item Start --> */}

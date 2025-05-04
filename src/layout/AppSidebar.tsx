@@ -8,7 +8,7 @@ import {
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
-  GridIcon,
+  Dashboard,
   HorizontaLDots,
   ListIcon,
   PageIcon,
@@ -16,6 +16,7 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  Building2
 } from "../icons/index";
 
 type NavItem = {
@@ -27,10 +28,18 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <Dashboard />,
     name: "Dashboard",
     // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
     path: "/",
+  },
+  {
+    icon: <Building2 />,
+    name: "Empresas",
+    subItems: [
+                { name: "Registos", path: "/company-requests", pro: false },
+                { name: "Lista", path: "/company-list", pro: false }
+              ],
   },
   {
     icon: <CalenderIcon />,

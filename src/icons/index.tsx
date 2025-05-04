@@ -1,7 +1,6 @@
 import PlusIcon from "./plus.svg";
 import CloseIcon from "./close.svg";
 import BoxIcon from "./box.svg";
-import CheckCircleIcon from "./check-circle.svg";
 import AlertIcon from "./alert.svg";
 import InfoIcon from "./info.svg";
 import ErrorIcon from "./info-hexa.svg";
@@ -54,8 +53,22 @@ import BellIcon from "./bell.svg";
 import Briefcase from "./briefcase.svg";
 import Building2 from "./building-2.svg";
 import UsersRound from "./users-round.svg";
+import Dashboard from "./layout-dashboard.svg";
+import CircleX from "./circle-x.svg";
+import CircleCheck from "./circle-check.svg";
+import Award from "./award.svg";
+import MapPin from "./map-pin.svg";
+import MonitorSmartphone from "./monitor-smartphone.svg";
+import UserRoundSearch from "./user-round-search.svg";
+import Refresh from "./refresh-ccw.svg";
+
 
 export {
+  Refresh,
+  Award,
+  MapPin,
+  MonitorSmartphone,
+  UserRoundSearch,
   DownloadIcon,
   BellIcon,
   MoreDotIcon,
@@ -67,7 +80,6 @@ export {
   PlusIcon,
   BoxIcon,
   CloseIcon,
-  CheckCircleIcon,
   AlertIcon,
   InfoIcon,
   ErrorIcon,
@@ -111,5 +123,8 @@ export {
   ChatIcon,
   Briefcase,
   Building2,
-  UsersRound
+  UsersRound,
+  Dashboard,
+  CircleX,
+  CircleCheck
 };
