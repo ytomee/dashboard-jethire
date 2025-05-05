@@ -55,7 +55,7 @@ export const Requests = () => {
 
   const handleReject = async (id: string) => {
     try {
-      const response = await fetch(`/api/company/requests/${id}/reject`, {
+      const response = await fetch(`/api/company/requests/reject/${id}`, {
         method: "PATCH",
       });
       if (response.ok) {
@@ -72,7 +72,7 @@ export const Requests = () => {
 
   const handleValidate = async (id: string) => {
     try {
-      const response = await fetch(`/api/company/requests/${id}/validate`, {
+      const response = await fetch(`/api/company/requests/validate/${id}`, {
         method: "PATCH",
       });
       if (response.ok) {
