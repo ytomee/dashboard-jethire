@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/dbConnect";
 import CompanyRequest from "@/models/companyRequest";
 
 export async function PATCH(
-    request: Request,
-    context: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
     await connectDB();
 
-    const { id } = await context.params;
+    const { id } = context.params;
 
     const company = await CompanyRequest.findByIdAndUpdate(
       id,
