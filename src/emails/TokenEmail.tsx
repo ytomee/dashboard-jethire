@@ -15,9 +15,7 @@ interface TokenEmailProps {
   token?: string;
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : '';
+const baseUrl = "https://dashboard.jethire.pt";
 
 export const TokenEmail = ({ token }: TokenEmailProps) => (
   <Html>

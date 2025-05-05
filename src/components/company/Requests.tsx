@@ -6,11 +6,12 @@ import {
   Award,
   MapPin,
   MonitorSmartphone,
-  UserRoundSearch
+  UserRoundSearch,
+  Trash
 } from "@/icons";
+import { Modal } from "../ui/modal";
 
 export const Requests = () => {
-
   interface Company {
     _id: string;
     companyName: string;
@@ -35,6 +36,9 @@ export const Requests = () => {
   };
 
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [isValidateModalOpen, setIsValidateModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -53,39 +57,45 @@ export const Requests = () => {
     fetchCompanies();
   }, []);
 
-  const handleReject = async (id: string) => {
-    try {
-      const response = await fetch(`/api/company/requests/reject/${id}`, {
-        method: "PATCH",
-      });
-      if (response.ok) {
-        setCompanies(prev =>
-          prev.map(c => c._id === id ? { ...c, status: "rejected" } : c)
-        );
-      } else {
-        console.error("Erro ao rejeitar empresa.");
+  const handleReject = async () => {
+    if (selectedCompanyId) {
+      try {
+        const response = await fetch(`/api/company/requests/reject/${selectedCompanyId}`, {
+          method: "PATCH",
+        });
+        if (response.ok) {
+          setCompanies(prev =>
+            prev.map(c => c._id === selectedCompanyId ? { ...c, status: "rejected" } : c)
+          );
+          setIsRejectModalOpen(false);
+        } else {
+          console.error("Erro ao rejeitar empresa.");
+        }
+      } catch (error) {
+        console.error("Erro na operação de rejeição:", error);
       }
-    } catch (error) {
-      console.error("Erro na operação de rejeição:", error);
     }
   };
 
-  const handleValidate = async (id: string) => {
-    try {
-      const response = await fetch(`/api/company/requests/validate/${id}`, {
-        method: "PATCH",
-      });
-      if (response.ok) {
-        setCompanies(prev =>
-          prev.map(c => c._id === id ? { ...c, status: "approved" } : c)
-        );
-      } else {
-        console.error("Erro ao validar empresa.");
+  const handleValidate = async () => {
+    if (selectedCompanyId) {
+      try {
+        const response = await fetch(`/api/company/requests/validate/${selectedCompanyId}`, {
+          method: "PATCH",
+        });
+        if (response.ok) {
+          setCompanies(prev =>
+            prev.map(c => c._id === selectedCompanyId ? { ...c, status: "approved" } : c)
+          );
+          setIsValidateModalOpen(false);
+        } else {
+          console.error("Erro ao validar empresa.");
+        }
+      } catch (error) {
+        console.error("Erro na operação de validação:", error);
       }
-    } catch (error) {
-      console.error("Erro na operação de validação:", error);
     }
-  }  
+  };
 
   const sortedCompanies = [...companies].sort((a, b) => {
     const order = { pending: 0, approved: 1, rejected: 2 };
@@ -142,12 +152,12 @@ export const Requests = () => {
             {/* Botões */}
             <div className="mt-4 flex gap-4">
               <button 
-                onClick={() => handleValidate(company._id)}
+                onClick={() => { setSelectedCompanyId(company._id); setIsValidateModalOpen(true); }}
                 className="flex items-center gap-1 rounded-lg bg-neutral-600 px-4 py-2 text-white transition hover:bg-neutral-700">
                 <CircleCheck className="size-6" />Validar
               </button>
               <button
-                onClick={() => handleReject(company._id)}
+                onClick={() => { setSelectedCompanyId(company._id); setIsRejectModalOpen(true); }}
                 className="flex items-center gap-1 rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-900"
               >
                 <CircleX className="size-6" />Remover
@@ -158,6 +168,58 @@ export const Requests = () => {
       ) : (
         <p className="text-dark dark:text-white">A carregar empresas...</p>
       )}
+
+      {/* Modal de Validação */}
+      <Modal
+        isOpen={isValidateModalOpen}
+        onClose={() => setIsValidateModalOpen(false)}
+        showCloseButton={true}
+        isFullscreen={false}
+      >
+        <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
+          <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Validar Empresa?</h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">
+            Tem a certeza que deseja validar esta empresa?
+          </p>
+
+          <div className="flex w-full gap-4 mt-5">
+            <button
+              onClick={handleValidate}
+              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-green-600 px-3 py-3 text-white text-lg transition hover:bg-green-800"
+            ><Trash className="size-6" />Validar</button>
+            <button
+              onClick={() => setIsValidateModalOpen(false)}
+              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"
+            ><CircleX className="size-6" />Cancelar</button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        showCloseButton={true}
+        isFullscreen={false}
+      >
+        <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
+          <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Remover Empresa?</h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">
+            Tem a certeza que deseja remover esta empresa?
+          </p>
+
+          <div className="flex w-full gap-4 mt-5">
+            <button
+              onClick={handleReject}
+              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-red-600 px-3 py-3 text-white text-lg transition hover:bg-red-800"
+            ><Trash className="size-6" />Remover</button>
+            <button
+              onClick={() => setIsRejectModalOpen(false)}
+              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"
+            ><CircleX className="size-6" />Cancelar</button>
+          </div>
+        </div>
+      </Modal>
+
     </div>
   );
 };

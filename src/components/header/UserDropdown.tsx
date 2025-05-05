@@ -5,10 +5,13 @@ import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useSession, signOut } from "next-auth/react";
+import { Modal } from "../ui/modal";
+import { CircleX, Logout } from "@/icons";
 
 export default function UserDropdown() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -17,6 +20,7 @@ export default function UserDropdown() {
 
   const handleSignOut = async (e: React.MouseEvent) => {
     e.preventDefault();
+    setShowSignOutModal(false);
     await signOut({ redirect: true, callbackUrl: '/signin' });
   };
 
@@ -152,7 +156,10 @@ export default function UserDropdown() {
           </li>
         </ul>
         <Link
-          onClick={handleSignOut}
+          onClick={() => {
+            closeDropdown();
+            setShowSignOutModal(true);
+          }}
           href={""}
           className="flex items-center gap-3 px-4 py-2 mt-1 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
@@ -174,6 +181,28 @@ export default function UserDropdown() {
           Sair
         </Link>
       </Dropdown>
+
+      {/* Modal de confirmação */}
+      <Modal isOpen={showSignOutModal} onClose={() => setShowSignOutModal(false)}>
+        <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
+          <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Terminar sessão</h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">
+            Tem a certeza que pretende terminar a sessão? Precisa de voltar a inserir as credenciais para entrar.
+          </p>
+
+          <div className="flex w-full gap-4 mt-5">
+            <button
+              onClick={handleSignOut}
+              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-red-600 px-3 py-3 text-white text-lg transition hover:bg-red-800"
+            ><Logout className="size-6" />Sair</button>
+            <button
+              onClick={() => setShowSignOutModal(false)}
+              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"
+            ><CircleX className="size-6" />Cancelar</button>
+          </div>
+        </div>
+      </Modal>
+
     </div>
   );
 }
