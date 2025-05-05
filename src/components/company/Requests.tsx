@@ -153,12 +153,12 @@ export const Requests = () => {
             <div className="mt-4 flex gap-4">
               <button 
                 onClick={() => { setSelectedCompanyId(company._id); setIsValidateModalOpen(true); }}
-                className="flex items-center gap-1 rounded-lg bg-neutral-600 px-4 py-2 text-white transition hover:bg-neutral-700">
+                className="flex items-center gap-1 rounded-lg bg-neutral-600 px-4 py-3 text-white transition hover:bg-neutral-700">
                 <CircleCheck className="size-6" />Validar
               </button>
               <button
                 onClick={() => { setSelectedCompanyId(company._id); setIsRejectModalOpen(true); }}
-                className="flex items-center gap-1 rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-900"
+                className="flex items-center gap-1 rounded-lg bg-red-500 px-4 py-3 text-white transition hover:bg-red-900"
               >
                 <CircleX className="size-6" />Remover
               </button>
@@ -186,7 +186,7 @@ export const Requests = () => {
             <button
               onClick={handleValidate}
               className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-green-600 px-3 py-3 text-white text-lg transition hover:bg-green-800"
-            ><Trash className="size-6" />Validar</button>
+            ><CircleCheck className="size-6" />Validar</button>
             <button
               onClick={() => setIsValidateModalOpen(false)}
               className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"

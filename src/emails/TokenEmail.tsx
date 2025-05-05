@@ -25,7 +25,7 @@ export const TokenEmail = ({ token }: TokenEmailProps) => (
       <Container style={container}>
         <Section style={logoContainer}>
           <Img
-            src={`${baseUrl}/images/logo/logo.svg`}
+            src={`${baseUrl}/images/logo/logo.png`}
             width="120"
             height="36"
             alt="Jet Hire"
