@@ -4,25 +4,29 @@ import Link from "next/link";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
-import { EyeCloseIcon, EyeIcon } from "@/icons";
+import { EyeCloseIcon, EyeIcon, Loader } from "@/icons";
 import { signIn } from "next-auth/react";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUsername] = useState("");
   const [pass, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const res = await signIn("credentials", {
       user,
       pass,
       callbackUrl: "/",
-    });    
+      redirect: true,
+    });
 
     if (res?.error) {
       alert(res.error || "Erro ao autenticar");
+      setLoading(false);
     }
   };
 
@@ -75,15 +79,22 @@ export default function SignInForm() {
                 </div>
               </div>
               <div>
-                <Button className="w-full" size="sm">
-                  Entrar
+                <Button className="w-full" size="sm" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader className="mr-1 animate-spin" />
+                      A entrar...
+                    </>
+                  ) : (
+                    "Entrar"
+                  )}
                 </Button>
               </div>
             </div>
           </form>
           <div className="mt-5">
             <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-              Tem um token de acesso? {""}
+              Tem um token de acesso?{" "}
               <Link
                 href="/signup"
                 className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
