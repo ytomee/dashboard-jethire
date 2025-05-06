@@ -7,7 +7,8 @@ import {
   MapPin,
   MonitorSmartphone,
   UserRoundSearch,
-  Trash
+  Trash,
+  Loader
 } from "@/icons";
 import { Modal } from "../ui/modal";
 
@@ -39,6 +40,8 @@ export const Requests = () => {
   const [isValidateModalOpen, setIsValidateModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -57,8 +60,17 @@ export const Requests = () => {
     fetchCompanies();
   }, []);
 
+  const closeModalWithDelay = (modalSetter: (value: boolean) => void) => {
+    setTimeout(() => {
+      modalSetter(false);
+      setIsLoading(false);
+      setSuccessMessage("");
+    }, 2000);
+  };
+
   const handleReject = async () => {
     if (selectedCompanyId) {
+      setIsLoading(true);
       try {
         const response = await fetch(`/api/company/requests/reject/${selectedCompanyId}`, {
           method: "PATCH",
@@ -67,18 +79,22 @@ export const Requests = () => {
           setCompanies(prev =>
             prev.map(c => c._id === selectedCompanyId ? { ...c, status: "rejected" } : c)
           );
-          setIsRejectModalOpen(false);
+          setSuccessMessage("Empresa removida com sucesso!");
+          closeModalWithDelay(setIsRejectModalOpen);
         } else {
           console.error("Erro ao rejeitar empresa.");
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Erro na operação de rejeição:", error);
+        setIsLoading(false);
       }
     }
   };
 
   const handleValidate = async () => {
     if (selectedCompanyId) {
+      setIsLoading(true);
       try {
         const response = await fetch(`/api/company/requests/validate/${selectedCompanyId}`, {
           method: "PATCH",
@@ -87,12 +103,15 @@ export const Requests = () => {
           setCompanies(prev =>
             prev.map(c => c._id === selectedCompanyId ? { ...c, status: "approved" } : c)
           );
-          setIsValidateModalOpen(false);
+          setSuccessMessage("Empresa validada com sucesso!");
+          closeModalWithDelay(setIsValidateModalOpen);
         } else {
           console.error("Erro ao validar empresa.");
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Erro na operação de validação:", error);
+        setIsLoading(false);
       }
     }
   };
@@ -153,7 +172,8 @@ export const Requests = () => {
             <div className="mt-4 flex gap-4">
               <button 
                 onClick={() => { setSelectedCompanyId(company._id); setIsValidateModalOpen(true); }}
-                className="flex items-center gap-1 rounded-lg bg-neutral-600 px-4 py-3 text-white transition hover:bg-neutral-700">
+                className="flex items-center gap-1 rounded-lg bg-neutral-600 px-4 py-3 text-white transition hover:bg-neutral-700"
+              >
                 <CircleCheck className="size-6" />Validar
               </button>
               <button
@@ -170,56 +190,64 @@ export const Requests = () => {
       )}
 
       {/* Modal de Validação */}
-      <Modal
-        isOpen={isValidateModalOpen}
-        onClose={() => setIsValidateModalOpen(false)}
-        showCloseButton={true}
-        isFullscreen={false}
-      >
+      <Modal isOpen={isValidateModalOpen} onClose={() => setIsValidateModalOpen(false)} showCloseButton={true} isFullscreen={false}>
         <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
-          <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Validar Empresa?</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">
-            Tem a certeza que deseja validar esta empresa?
-          </p>
-
-          <div className="flex w-full gap-4 mt-5">
-            <button
-              onClick={handleValidate}
-              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-green-600 px-3 py-3 text-white text-lg transition hover:bg-green-800"
-            ><CircleCheck className="size-6" />Validar</button>
-            <button
-              onClick={() => setIsValidateModalOpen(false)}
-              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"
-            ><CircleX className="size-6" />Cancelar</button>
-          </div>
+          {successMessage ? (
+            <p className="text-neutral-700 dark:text-neutral-100 text-lg text-center">{successMessage}</p>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Validar Empresa?</h2>
+              <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">Tem a certeza que deseja validar esta empresa?</p>
+              <div className="flex w-full gap-4 mt-5">
+                <button
+                  onClick={handleValidate}
+                  disabled={isLoading}
+                  className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-green-600 hover:bg-green-800 px-3 py-3 text-white text-lg transition disabled:opacity-50"
+                >
+                  {isLoading ? <Loader className="size-6 animate-spin" /> : <CircleCheck className="size-6" />} Validar
+                </button>
+                <button
+                  onClick={() => setIsValidateModalOpen(false)}
+                  disabled={isLoading}
+                  className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 hover:bg-neutral-800 px-3 py-3 text-white text-lg transition disabled:opacity-50"
+                >
+                  <CircleX className="size-6" />Cancelar
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
-      <Modal
-        isOpen={isRejectModalOpen}
-        onClose={() => setIsRejectModalOpen(false)}
-        showCloseButton={true}
-        isFullscreen={false}
-      >
+      {/* Modal de Rejeição */}
+      <Modal isOpen={isRejectModalOpen} onClose={() => setIsRejectModalOpen(false)} showCloseButton={true} isFullscreen={false}>
         <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
-          <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Remover Empresa?</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">
-            Tem a certeza que deseja remover esta empresa?
-          </p>
-
-          <div className="flex w-full gap-4 mt-5">
-            <button
-              onClick={handleReject}
-              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-red-600 px-3 py-3 text-white text-lg transition hover:bg-red-800"
-            ><Trash className="size-6" />Remover</button>
-            <button
-              onClick={() => setIsRejectModalOpen(false)}
-              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"
-            ><CircleX className="size-6" />Cancelar</button>
-          </div>
+          {successMessage ? (
+            <p className="text-neutral-700 dark:text-neutral-100 text-lg text-center">{successMessage}</p>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Remover Empresa?</h2>
+              <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">Tem a certeza que deseja remover esta empresa?</p>
+              <div className="flex w-full gap-4 mt-5">
+                <button
+                  onClick={handleReject}
+                  disabled={isLoading}
+                  className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-red-600 hover:bg-red-800 px-3 py-3 text-white text-lg transition disabled:opacity-50"
+                >
+                  {isLoading ? <Loader className="size-6 animate-spin" /> : <Trash className="size-6" />} Remover
+                </button>
+                <button
+                  onClick={() => setIsRejectModalOpen(false)}
+                  disabled={isLoading}
+                  className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 hover:bg-neutral-800 px-3 py-3 text-white text-lg transition disabled:opacity-50"
+                >
+                  <CircleX className="size-6" />Cancelar
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
-
     </div>
   );
 };

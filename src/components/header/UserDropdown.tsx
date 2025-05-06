@@ -6,12 +6,12 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useSession, signOut } from "next-auth/react";
 import { Modal } from "../ui/modal";
-import { CircleX, Logout } from "@/icons";
 
 export default function UserDropdown() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -20,8 +20,14 @@ export default function UserDropdown() {
 
   const handleSignOut = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowSignOutModal(false);
-    await signOut({ redirect: true, callbackUrl: '/signin' });
+    setLoading(true);
+    try {
+      setShowSignOutModal(false);
+      await signOut({ redirect: true, callbackUrl: "/signin" });
+    } catch (error) {
+      console.error("Erro ao fazer sign out:", error);
+      setLoading(false);
+    }
   };
 
   function closeDropdown() {
@@ -182,23 +188,32 @@ export default function UserDropdown() {
         </Link>
       </Dropdown>
 
-      {/* Modal de confirmação */}
+      {/* Modal de confirmação de logout */}
       <Modal isOpen={showSignOutModal} onClose={() => setShowSignOutModal(false)}>
-        <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
-          <h2 className="text-2xl font-bold mb-2 text-dark dark:text-white">Terminar sessão</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6 text-sm">
-            Tem a certeza que pretende terminar a sessão? Precisa de voltar a inserir as credenciais para entrar.
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Terminar sessão</h2>
+          </div>
+
+          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
+            Tem a certeza que quer terminar a sessão?
           </p>
 
-          <div className="flex w-full gap-4 mt-5">
-            <button
-              onClick={handleSignOut}
-              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-red-600 px-3 py-3 text-white text-lg transition hover:bg-red-800"
-            ><Logout className="size-6" />Sair</button>
+          <div className="mt-6 flex justify-end gap-3">
             <button
               onClick={() => setShowSignOutModal(false)}
-              className="w-1/2 flex justify-center items-center gap-2 rounded-xl bg-neutral-600 px-3 py-3 text-white text-lg transition hover:bg-neutral-700"
-            ><CircleX className="size-6" />Cancelar</button>
+              disabled={loading}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleSignOut}
+              disabled={loading}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? "A sair..." : "Terminar sessão"}
+            </button>
           </div>
         </div>
       </Modal>

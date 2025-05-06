@@ -1,10 +1,10 @@
 // app/api/email-preview/route.ts
 import { render } from '@react-email/render';
 import { NextResponse } from 'next/server';
-import TokenEmail from '@/emails/TokenEmail'; // ajusta o path
+import CredentialsEmail from '@/emails/CredentialsEmail';
 
 export async function GET() {
-  const html = await render(<TokenEmail token="DJZ-TLX" />, {
+  const html = await render(<CredentialsEmail companyName='Infy Solutions' username='infy' password='123' />, {
     pretty: true,
   });
 

@@ -32,7 +32,7 @@ export async function PATCH(req: NextRequest) {
     // Atualiza o estado e adiciona o token de ativação
     company.status = "approved";
     company.activationToken = hashedToken;
-    company.activationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // Expira em 24h
+    company.activationExpires = new Date(Date.now() + 1 * 60 * 60 * 1000); // Expira em 1h
     await company.save();
 
     // Envia o email de validação
