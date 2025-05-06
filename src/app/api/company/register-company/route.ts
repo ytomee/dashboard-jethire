@@ -26,31 +26,48 @@ export async function POST(req: NextRequest) {
     const notExpired = reqCompany.activationExpires && reqCompany.activationExpires > new Date();
 
     if (isValid && notExpired) {
-      const baseUsername = reqCompany.companyName.toLowerCase().replace(/\s+/g, "");
-      let username = baseUsername;
-      let counter = 1;
+      function removeAccents(str: string): string {
+        return str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/\s+/g, "");
+      }
 
-      while (await Company.exists({ user: username })) {
-        username = `${baseUsername}${counter}`;
-        counter++;
+      const baseAdminUsername = removeAccents(reqCompany.responsiblePerson);
+      const baseCompanyUsername = removeAccents(reqCompany.companyName);
+      let username = `${baseCompanyUsername}-${baseAdminUsername}`;
+      let adminCounter = 1;
+
+      while (await Company.exists({ "team.user": username })) {
+        username = `${baseAdminUsername}${adminCounter}`;
+        adminCounter++;
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
+      
+      const newAdmin = {
+        user: username,
+        name: reqCompany.responsiblePerson,
+        email: reqCompany.responsibleEmail,
+        password: hashedPassword,
+        role: "admin",
+        phone: reqCompany.responsiblePhone,
+        isActive: true,
+      };
 
       const newCompany = await Company.create({
-        user: username,
         type: "company",
-        pass: hashedPassword,
         name: reqCompany.companyName,
-        city: reqCompany.city,
-        country: reqCompany.country,
         address: reqCompany.address,
-        foundationYear: reqCompany.foundedYear,
+        foundationYear: reqCompany.foundationYear,
         contact: {
           email: reqCompany.generalEmail,
           phone: reqCompany.phone,
           website: reqCompany.website,
         },
+        isActive: true,
+        team: [newAdmin],
       });
 
       await companyRequest.findByIdAndUpdate(reqCompany._id, {
@@ -60,7 +77,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: process.env.RESEND_FROM!,
         to: reqCompany.responsibleEmail,
-        subject: `A conta da empresa ${reqCompany.companyName} foi criada com sucesso!`,
+        subject: `A conta de administrador da empresa ${reqCompany.companyName} foi criada com sucesso!`,
         react: CredentialsEmail({
           companyName: reqCompany.companyName,
           username,

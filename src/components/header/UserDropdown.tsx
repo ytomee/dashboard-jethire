@@ -77,10 +77,25 @@ export default function UserDropdown() {
       >
         <div className="px-4">
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {session?.user.type === "admin" ? "Administrador" : session?.user.type === "company" ? "Empresa" : ""}
+          {session?.user.type === "admin"
+          ? "Administrador"
+          : session?.user.type === "company"
+          ? (() => {
+              switch (session.user.role) {
+                case "admin":
+                  return `${session.user.company} | Administrador`;
+                case "manager":
+                  return `${session.user.company} | Gestor`;
+                case "recruiter":
+                  return `${session.user.company} | Recrutador`;
+                default:
+                  return session.user.company;
+              }
+            })()
+          : ""}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
+            {session?.user.email}
           </span>
         </div>
 
@@ -89,7 +104,7 @@ export default function UserDropdown() {
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              href="/profile"
+              href={`profile/${session?.user.id}`}
               className="flex items-center gap-3 px-1 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg
@@ -107,10 +122,11 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Edit profile
+              Editar perfil
             </DropdownItem>
           </li>
-          <li>
+
+          {/* <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
@@ -159,7 +175,8 @@ export default function UserDropdown() {
               </svg>
               Support
             </DropdownItem>
-          </li>
+          </li> */}
+
         </ul>
         <Link
           onClick={() => {
@@ -189,7 +206,7 @@ export default function UserDropdown() {
       </Dropdown>
 
       {/* Modal de confirmação de logout */}
-      <Modal isOpen={showSignOutModal} onClose={() => setShowSignOutModal(false)}>
+      <Modal isOpen={showSignOutModal} onClose={() => setShowSignOutModal(false)} className="max-w-[450px]">
         <div className="p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Terminar sessão</h2>

@@ -15,8 +15,8 @@ import {
   PieChartIcon,
   PlugInIcon,
   TableIcon,
-  UserCircleIcon,
-  Building2
+  Building2,
+  UsersRound,
 } from "../icons/index";
 
 type NavItem = {
@@ -42,16 +42,18 @@ const navItems: NavItem[] = [
               ],
   },
   {
+    icon: <UsersRound />,
+    name: "Equipa",
+    subItems: [
+                { name: "Ver equipa", path: "/list-member", pro: false },
+                { name: "+ Adicionar", path: "/add-member", pro: false }
+              ],
+  },
+  {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/calendar",
   },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-
   {
     name: "Forms",
     icon: <ListIcon />,

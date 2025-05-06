@@ -190,7 +190,7 @@ export const Requests = () => {
       )}
 
       {/* Modal de Validação */}
-      <Modal isOpen={isValidateModalOpen} onClose={() => setIsValidateModalOpen(false)} showCloseButton={true} isFullscreen={false}>
+      <Modal isOpen={isValidateModalOpen} onClose={() => setIsValidateModalOpen(false)} showCloseButton={true} isFullscreen={false} className="max-w-[450px]">
         <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
           {successMessage ? (
             <p className="text-neutral-700 dark:text-neutral-100 text-lg text-center">{successMessage}</p>
@@ -220,7 +220,7 @@ export const Requests = () => {
       </Modal>
 
       {/* Modal de Rejeição */}
-      <Modal isOpen={isRejectModalOpen} onClose={() => setIsRejectModalOpen(false)} showCloseButton={true} isFullscreen={false}>
+      <Modal isOpen={isRejectModalOpen} onClose={() => setIsRejectModalOpen(false)} showCloseButton={true} isFullscreen={false} className="max-w-[450px]">
         <div className="p-5 rounded-lg bg-white dark:bg-gray-900">
           {successMessage ? (
             <p className="text-neutral-700 dark:text-neutral-100 text-lg text-center">{successMessage}</p>

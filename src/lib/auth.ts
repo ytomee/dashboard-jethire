@@ -5,6 +5,13 @@ import dbConnect from "@/lib/dbConnect";
 import Administrator from "@/models/admin";
 import Company from "@/models/company";
 
+interface TeamMember {
+  user: string;
+  password: string;
+  role: string;
+  company: string;
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -17,7 +24,6 @@ export const authOptions: NextAuthOptions = {
         await dbConnect();
         const { user, pass } = credentials!;
 
-        // Primeiro tenta encontrar como administrador
         const admin = await Administrator.findOne({ user });
         if (admin) {
           const isPasswordValid = await bcrypt.compare(pass, admin.pass);
@@ -25,20 +31,26 @@ export const authOptions: NextAuthOptions = {
           return {
             id: admin._id.toString(),
             name: admin.name,
+            email: admin.email,
             type: "admin",
           };
         }
 
-        // Depois tenta encontrar como empresa
-        const company = await Company.findOne({ user });
+        const company = await Company.findOne({ "team.user": user });
         if (company) {
-          const isPasswordValid = await bcrypt.compare(pass, company.pass);
-          if (!isPasswordValid) throw new Error("Palavra-passe incorreta");
-          return {
-            id: company._id.toString(),
-            name: company.name,
-            type: "company",
-          };
+          const teamMember = company.team.find((member: TeamMember) => member.user === user);
+          if (teamMember) {
+            const isPasswordValid = await bcrypt.compare(pass, teamMember.password);
+            if (!isPasswordValid) throw new Error("Palavra-passe incorreta");
+            return {
+              id: teamMember._id.toString(),
+              name: teamMember.name,
+              email: teamMember.email,
+              type: "company",
+              company: company.name,
+              role: teamMember.role,
+            };
+          }
         }
 
         throw new Error("Utilizador não encontrado");
@@ -58,6 +70,8 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.type = user.type;
         token.name = user.name;
+        token.role = user.role;
+        token.company = user.company;
       }
       return token;
     },
@@ -66,6 +80,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id;
         session.user.type = token.type;
         session.user.name = token.name;
+        session.user.role = token.role;
+        session.user.company = token.company;
       }
       return session;
     },

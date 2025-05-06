@@ -8,21 +8,33 @@ const descriptionSchema = new Schema(
   { _id: false }
 );
 
+const userSchema = new mongoose.Schema(
+  {
+    user: { type: String, required: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, lowercase: true },
+    password: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ['admin', 'manager', 'recruiter'],
+      default: 'recruiter',
+    },
+    pfp: { type: String },
+    pfp_id: { type: String },  
+    city: { type: String },
+    country: { type: String },
+    phone: { type: String },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { _id: true }
+);
+
 const companySchema = new Schema(
   {
     type: { type: String, default: "company" },
-
-    user: {
-        type: String,
-        required: true,
-        lowercase: true,
-        unique: true,
-    },
-
-    pass: {
-      type: String,
-      required: true,
-    },
 
     name: { type: String, required: true },
     slogan: String,
@@ -53,6 +65,8 @@ const companySchema = new Schema(
       type: Boolean,
       default: true,
     },
+
+    team: [userSchema],
 
   },
   { timestamps: true }
