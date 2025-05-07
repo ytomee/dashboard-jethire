@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       let adminCounter = 1;
 
       while (await Company.exists({ "team.user": username })) {
-        username = `${baseAdminUsername}${adminCounter}`;
+        username = `${baseCompanyUsername}-${baseAdminUsername}${adminCounter}`;
         adminCounter++;
       }
 
