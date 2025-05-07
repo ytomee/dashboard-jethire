@@ -5,6 +5,8 @@ import CompanyRequest from "@/models/companyRequest";
 import { Resend } from "resend";
 import TokenEmail from "@/emails/TokenEmail";
 
+console.log("RESEND_API_KEY:", process.env.RESEND_API_KEY ? "OK" : "MISSING");
+console.log("RESEND_FROM:", process.env.RESEND_FROM);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function PATCH(req: NextRequest) {
