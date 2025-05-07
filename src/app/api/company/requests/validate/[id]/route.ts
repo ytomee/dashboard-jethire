@@ -1,5 +1,3 @@
-export const runtime = 'nodejs';
-
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import connectDB from "@/lib/dbConnect";
