@@ -49,7 +49,7 @@ export default function AddMemberForm() {
     };
 
     try {
-      const response = await fetch(`/api/company/team/invite/${adminId}`, {
+      const response = await fetch(`/api/company/team/invite/send/${adminId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

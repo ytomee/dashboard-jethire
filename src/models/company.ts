@@ -45,7 +45,7 @@ const pendingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'expired', 'pending'],
+      enum: ['active', 'pending'],
       default: 'pending',
       required: true,
     },
