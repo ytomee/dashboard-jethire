@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['admin', 'manager', 'recruiter'],
       default: 'recruiter',
+      required: true,
     },
     pfp: { type: String },
     pfp_id: { type: String },  
@@ -30,6 +31,28 @@ const userSchema = new mongoose.Schema(
     },
   },
   { _id: true }
+);
+
+const pendingSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, lowercase: true },
+    role: {
+      type: String,
+      enum: ['admin', 'manager', 'recruiter'],
+      default: 'recruiter',
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['active', 'expired', 'pending'],
+      default: 'pending',
+      required: true,
+    },
+    token: { type: String, required: true },
+    expiresAt: { type: Date, required: true },
+  },
+  { timestamps: true }
 );
 
 const companySchema = new Schema(
@@ -67,6 +90,7 @@ const companySchema = new Schema(
     },
 
     team: [userSchema],
+    pending: [pendingSchema],
 
   },
   { timestamps: true }

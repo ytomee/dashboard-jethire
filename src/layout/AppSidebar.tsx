@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     name: "Equipa",
     subItems: [
                 { name: "Ver equipa", path: "/list-member", pro: false },
-                { name: "+ Adicionar", path: "/add-member", pro: false }
+                { name: "+ Adicionar", path: "/team/add", pro: false }
               ],
   },
   {
