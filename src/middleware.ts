@@ -6,6 +6,7 @@ import { getToken } from 'next-auth/jwt';
 const PUBLIC_PATHS = [
   '/signin',
   '/signup',
+  '/invite'
 ];
 
 export async function middleware(req: NextRequest) {

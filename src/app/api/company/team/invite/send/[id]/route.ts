@@ -1,7 +1,7 @@
 // src/app/api/company/team/invite/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Company from "@/models/company";
-import bcrypt from "bcrypt";
+import crypto from "crypto";
 import moment from "moment";
 import { Resend } from "resend";
 import { InviteEmail } from "@/emails/InviteEmail";
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const token = await bcrypt.hash(email, 10);
+    const token = crypto.randomBytes(16).toString("hex");
     const expiresAt = moment().add(1, "hour").toDate();
 
     company.pending.push({
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     await company.save();
 
-    const inviteLink = `${process.env.BASE_URL}test/${token}`;
+    const inviteLink = `${process.env.NEXTAUTH_URL}invite/${token}`;
 
     await resend.emails.send({
       from: process.env.RESEND_FROM!,
