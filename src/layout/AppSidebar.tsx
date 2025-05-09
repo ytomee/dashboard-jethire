@@ -45,7 +45,7 @@ const navItems: NavItem[] = [
     icon: <UsersRound />,
     name: "Equipa",
     subItems: [
-                { name: "Ver equipa", path: "/list-member", pro: false },
+                { name: "Ver equipa", path: "/team/list", pro: false },
                 { name: "+ Adicionar", path: "/team/add", pro: false }
               ],
   },
