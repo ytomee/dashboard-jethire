@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Company from "@/models/company";
 import dbConnect from "@/lib/dbConnect";
 
