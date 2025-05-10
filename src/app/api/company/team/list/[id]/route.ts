@@ -19,7 +19,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "Utilizador não associado a nenhuma empresa." }, { status: 404 });
     }
 
-    return NextResponse.json({ team: company.team || [] });
+    return NextResponse.json({
+      team: company.team || [],
+      pfp: company.pfp || null
+    });
   } catch (error) {
     console.error("Erro ao listar convites:", error);
     return NextResponse.json({ message: "Erro ao obter convites pendentes." }, { status: 500 });

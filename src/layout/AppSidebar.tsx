@@ -37,8 +37,8 @@ const navItems: NavItem[] = [
     icon: <Building2 />,
     name: "Empresas",
     subItems: [
-                { name: "Registos", path: "/company-requests", pro: false },
-                { name: "Lista", path: "/company-list", pro: false }
+                { name: "Registos", path: "/company/requests", pro: false },
+                { name: "Lista", path: "/company/list", pro: false }
               ],
   },
   {

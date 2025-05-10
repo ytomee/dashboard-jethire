@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
 import moment from "moment";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 interface Invitation {
   name: string;
@@ -21,35 +21,24 @@ interface Invitation {
 }
 
 export default function AddMemberTable() {
+  const { data: session } = useSession();
   const [invites, setInvites] = useState<Invitation[]>([]);
-  const [adminId, setAdminId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const session = await getSession();
-      if (session?.user?.id) {
-        setAdminId(session.user.id);
-      }
-    };
-
-    fetchSession();
-  }, []);
 
   useEffect(() => {
     const fetchInvites = async () => {
-      if (!adminId) return;
-  
+      if (!session?.user?.id) return;
+
       try {
-        const res = await fetch(`/api/company/team/invite/list/${adminId}`);
+        const res = await fetch(`/api/company/team/invite/list/${session.user.id}`);
         const data = await res.json();
         setInvites(data.pending);
       } catch (error) {
         console.error("Erro ao carregar convites:", error);
       }
     };
-  
+
     fetchInvites();
-  }, [adminId]);
+  }, [session?.user?.id]);
 
   const getStatusLabel = (invite: Invitation) => {
     if (invite.status === "active") return "Ativo";
@@ -104,13 +93,13 @@ export default function AddMemberTable() {
                     {invite.email}
                   </TableCell>
                   <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
-                  {invite.role === "recruiter"
-                  ? "Recrutador"
-                  : invite.role === "manager"
-                  ? "Gestor"
-                  : invite.role === "admin"
-                  ? "Administrador"
-                  : invite.role}
+                    {invite.role === "recruiter"
+                      ? "Recrutador"
+                      : invite.role === "manager"
+                      ? "Gestor"
+                      : invite.role === "admin"
+                      ? "Administrador"
+                      : invite.role}
                   </TableCell>
                   <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
                     <Badge size="sm" color={getBadgeColor(invite)}>

@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface CompanyMember {
   user: string;
@@ -14,86 +15,56 @@ interface CompanyMember {
 }
 
 export default function TeamList() {
-  const team: CompanyMember[] = [
-    {
-      user: "ana.costa",
-      name: "Ana Costa",
-      email: "ana@empresa.pt",
-      role: "manager",
-      pfp: "https://randomuser.me/api/portraits/women/44.jpg",
-      city: "Lisboa",
-      country: "Portugal",
-      phone: "912345678",
-    },
-    {
-      user: "joao.silva",
-      name: "João Silva",
-      email: "joao@empresa.pt",
-      role: "recruiter",
-      pfp: "https://randomuser.me/api/portraits/men/32.jpg",
-      city: "Porto",
-      country: "Portugal",
-      phone: "913456789",
-    },
-    {
-      user: "maria.sousa",
-      name: "Maria Sousa",
-      email: "maria@empresa.pt",
-      role: "admin",
-      pfp: "https://randomuser.me/api/portraits/women/55.jpg",
-      city: "Coimbra",
-      country: "Portugal",
-      phone: "914567890",
-    },
-    {
-      user: "carlos.ferreira",
-      name: "Carlos Ferreira",
-      email: "carlos@empresa.pt",
-      role: "recruiter",
-      pfp: "https://randomuser.me/api/portraits/men/21.jpg",
-      city: "Braga",
-      country: "Portugal",
-      phone: "915678901",
-    },
-    {
-      user: "sofia.matos",
-      name: "Sofia Matos",
-      email: "sofia@empresa.pt",
-      role: "manager",
-      pfp: "https://randomuser.me/api/portraits/women/36.jpg",
-      city: "Faro",
-      country: "Portugal",
-      phone: "916789012",
-    },
-    {
-      user: "tiago.lopes",
-      name: "Tiago Lopes",
-      email: "tiago@empresa.pt",
-      role: "admin",
-      pfp: "https://randomuser.me/api/portraits/men/45.jpg",
-      city: "Setúbal",
-      country: "Portugal",
-      phone: "917890123",
-    },
-  ];
+  const { data: session } = useSession();
+  const [team, setTeam] = useState<CompanyMember[]>([]);
+  const [companyPfp, setCompanyPfp] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      if (!session?.user?.id) return;
+
+      try {
+        const res = await fetch(`/api/company/team/list/${session.user.id}`);
+        const data = await res.json();
+        setTeam(data.team);
+        setCompanyPfp(data.pfp);
+      } catch (error) {
+        console.error("Erro ao buscar a equipa:", error);
+      }
+    };
+
+    fetchTeam();
+  }, [session?.user?.id]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mx-auto py-6">
-      {team.map((member, index) => (
-        <TeamCard key={index} company={member} />
-      ))}
+      {team.length > 0 ? (
+        team.map((member, index) => (
+          <TeamCard key={index} company={member} companyPfp={companyPfp} />
+        ))
+      ) : (
+        <p className="text-gray-500 dark:text-gray-400 col-span-full">
+          Nenhum membro encontrado.
+        </p>
+      )}
     </div>
   );
 }
 
+function TeamCard({
+  company,
+  companyPfp,
+}: {
+  company: CompanyMember;
+  companyPfp: string | null;
+}) {
+  const profileImage = company.pfp || companyPfp || "/images/default/user.png";
 
-function TeamCard({ company }: { company: CompanyMember }) {
   return (
-    <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-2xl shadow-md p-6">
-      {/* Parte superior: Imagem + nome + função */}
+    <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
       <div className="flex items-center gap-4">
         <img
-          src={company.pfp || "/default-pfp.png"}
+          src={profileImage}
           alt="Foto de perfil"
           className="w-20 h-20 rounded-full object-cover border border-gray-300 dark:border-neutral-700"
         />
@@ -103,17 +74,16 @@ function TeamCard({ company }: { company: CompanyMember }) {
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">
             {company.role === "recruiter"
-                  ? "Recrutador"
-                  : company.role === "manager"
-                  ? "Gestor"
-                  : company.role === "admin"
-                  ? "Administrador"
-                  : company.role}
+              ? "Recrutador"
+              : company.role === "manager"
+              ? "Gestor"
+              : company.role === "admin"
+              ? "Administrador"
+              : company.role}
           </p>
         </div>
       </div>
 
-      {/* Parte inferior: Contactos e localização */}
       <div className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
         <Info label="Email" value={company.email} />
         <Info label="Telefone" value={company.phone} />
