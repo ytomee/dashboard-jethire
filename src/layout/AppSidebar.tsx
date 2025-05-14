@@ -37,8 +37,8 @@ const navItems: NavItem[] = [
     icon: <Building2 />,
     name: "Empresas",
     subItems: [
+                { name: "Lista", path: "/company/list", pro: false },
                 { name: "Registos", path: "/company/requests", pro: false },
-                { name: "Lista", path: "/company/list", pro: false }
               ],
   },
   {
@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     name: "Equipa",
     subItems: [
                 { name: "Ver equipa", path: "/team/list", pro: false },
-                { name: "+ Adicionar", path: "/team/add", pro: false }
+                { name: "+ Adicionar", path: "/team/add", pro: false },
               ],
   },
   {

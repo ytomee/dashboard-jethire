@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Administrador não encontrado." }, { status: 404 });
     }
 
+    const alreadyInTeam = company.team.some((member: { email: string }) => member.email === email);
+    if (alreadyInTeam) {
+      return NextResponse.json({ message: "Este utilizador já faz parte da equipa." }, { status: 400 });
+    }
+
     const existingInvitation = company.pending.find((invite: PendingInvitation) => invite.email === email);
     if (existingInvitation) {
       const isExpired = moment().isAfter(existingInvitation.expiresAt);

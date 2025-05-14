@@ -1,5 +1,5 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import RequestsPage from "@/components/company/requests/Page";
+import CompanyList from "@/components/company/list/Page";
 import { Metadata } from "next";
 import React from "react";
 
@@ -12,8 +12,8 @@ export default function CompanyRequests() {
 
   return (
     <div>
-      <PageBreadcrumb pageTitle="Registos de empresas" />
-      <RequestsPage />
+      <PageBreadcrumb pageTitle="Lista de empresas" />
+      <CompanyList />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
 import React from "react";
-import AddMemberTable from "@/components/company/add-member/Table";
-import AddMemberForm from "@/components/company/add-member/Form";
+import AddMemberTable from "@/components/team/add-member/Table";
+import AddMemberForm from "@/components/team/add-member/Form";
 
 export const metadata: Metadata = {
   title: "Adicionar membros | JetHire",

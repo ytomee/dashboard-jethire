@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Loader } from "@/icons";
 import {
   Table,
   TableBody,
@@ -23,6 +24,7 @@ interface Invitation {
 export default function AddMemberTable() {
   const { data: session } = useSession();
   const [invites, setInvites] = useState<Invitation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchInvites = async () => {
@@ -32,7 +34,9 @@ export default function AddMemberTable() {
         const res = await fetch(`/api/company/team/invite/list/${session.user.id}`);
         const data = await res.json();
         setInvites(data.pending);
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.error("Erro ao carregar convites:", error);
       }
     };
@@ -84,38 +88,45 @@ export default function AddMemberTable() {
             </TableHeader>
 
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {invites.map((invite, index) => (
-                <TableRow key={index}>
-                  <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-800 dark:text-white/90">
-                    {invite.name}
-                  </TableCell>
-                  <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
-                    {invite.email}
-                  </TableCell>
-                  <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
-                    {invite.role === "recruiter"
-                      ? "Recrutador"
-                      : invite.role === "manager"
-                      ? "Gestor"
-                      : invite.role === "admin"
-                      ? "Administrador"
-                      : invite.role}
-                  </TableCell>
-                  <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
-                    <Badge size="sm" color={getBadgeColor(invite)}>
-                      {getStatusLabel(invite)}
-                    </Badge>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell className="px-5 py-4 text-left flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <Loader className="animate-spin" /> A carregar candidatos ...
                   </TableCell>
                 </TableRow>
-              ))}
-
-              {invites.length === 0 && (
+              ) : invites.length === 0 ? (
                 <TableRow>
                   <TableCell className="px-5 py-4 text-left text-gray-500 dark:text-gray-400">
                     Nenhum convite encontrado.
                   </TableCell>
                 </TableRow>
+              ) : (
+                invites.map((invite, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-800 dark:text-white/90">
+                      {invite.name}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
+                      {invite.email}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
+                      {invite.role === "recruiter"
+                        ? "Recrutador"
+                        : invite.role === "manager"
+                        ? "Gestor"
+                        : invite.role === "admin"
+                        ? "Administrador"
+                        : invite.role}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-theme-sm text-gray-500 dark:text-gray-400">
+                      <Badge size="sm" color={getBadgeColor(invite)}>
+                        {getStatusLabel(invite)}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
+
             </TableBody>
           </Table>
         </div>

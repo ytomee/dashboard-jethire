@@ -7,7 +7,7 @@ interface Props {
   setSearchTerm: (value: string) => void;
 }
 
-export default function CompanyListSearch({ searchTerm, setSearchTerm }: Props) {
+export default function CompanyRequestsSearch({ searchTerm, setSearchTerm }: Props) {
   return (
     <div className="flex items-center mb-6 w-full">
       <div className="flex-grow mr-4">

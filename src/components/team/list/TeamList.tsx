@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { Loader } from "@/icons";
 
 interface CompanyMember {
   user: string;
@@ -14,9 +16,10 @@ interface CompanyMember {
   phone?: string;
 }
 
-export default function TeamList() {
+export default function TeamList({ searchTerm }: { searchTerm: string }) {
   const { data: session } = useSession();
   const [team, setTeam] = useState<CompanyMember[]>([]);
+  const [loading, setLoading] = useState(true);
   const [companyPfp, setCompanyPfp] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,7 +31,9 @@ export default function TeamList() {
         const data = await res.json();
         setTeam(data.team);
         setCompanyPfp(data.pfp);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Erro ao buscar a equipa:", error);
       }
     };
@@ -36,10 +41,29 @@ export default function TeamList() {
     fetchTeam();
   }, [session?.user?.id]);
 
+  const filteredTeam = team.filter((member) => {
+    const valuesToSearch = [
+      member.name,
+      member.email,
+      member.role,
+      member.city || "",
+      member.country || "",
+      member.phone || "",
+    ];
+
+    return valuesToSearch.some((value) =>
+      value.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mx-auto py-6">
-      {team.length > 0 ? (
-        team.map((member, index) => (
+      {loading ? (
+        <p className="text-gray-500 dark:text-gray-400 col-span-full flex items-center gap-2">
+          <Loader className="animate-spin" /> A carregar membros ...
+        </p>
+      ) : filteredTeam.length > 0 ? (
+        filteredTeam.map((member, index) => (
           <TeamCard key={index} company={member} companyPfp={companyPfp} />
         ))
       ) : (
@@ -63,7 +87,7 @@ function TeamCard({
   return (
     <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
       <div className="flex items-center gap-4">
-        <img
+        <Image
           src={profileImage}
           alt="Foto de perfil"
           className="w-20 h-20 rounded-full object-cover border border-gray-300 dark:border-neutral-700"
