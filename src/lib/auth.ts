@@ -27,12 +27,13 @@ export const authOptions: NextAuthOptions = {
         const admin = await Administrator.findOne({ user });
         if (admin) {
           const isPasswordValid = await bcrypt.compare(pass, admin.pass);
-          if (!isPasswordValid) throw new Error("Palavra-passe incorreta");
+          if (!isPasswordValid) throw new Error("Credenciais inválidas.");;
           return {
             id: admin._id.toString(),
             name: admin.name,
             email: admin.email,
             type: "admin",
+            role: "jethire-admin"
           };
         }
 
@@ -41,7 +42,7 @@ export const authOptions: NextAuthOptions = {
           const teamMember = company.team.find((member: TeamMember) => member.user === user);
           if (teamMember) {
             const isPasswordValid = await bcrypt.compare(pass, teamMember.password);
-            if (!isPasswordValid) throw new Error("Palavra-passe incorreta");
+            if(!isPasswordValid) throw new Error("Credenciais inválidas.");;
             return {
               id: teamMember._id.toString(),
               name: teamMember.name,
@@ -53,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        throw new Error("Utilizador não encontrado");
+        throw new Error("Credenciais inválidas.");
       },
     }),
   ],

@@ -27,6 +27,8 @@ export default function CompanyCard({ company }: { company: Company }) {
     <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
       <div className="flex items-center gap-4">
         <Image
+          width={0}
+          height={0}
           src={logo}
           alt="Logotipo da empresa"
           className="w-20 h-20 p-3 rounded-full object-cover bg-neutral-100 border border-gray-300 dark:border-neutral-700"

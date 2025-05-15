@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -8,7 +9,9 @@ import { EyeCloseIcon, EyeIcon, Loader } from "@/icons";
 import { signIn } from "next-auth/react";
 
 export default function SignInForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [user, setUsername] = useState("");
   const [pass, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,17 +19,20 @@ export default function SignInForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
 
     const res = await signIn("credentials", {
       user,
       pass,
       callbackUrl: "/",
-      redirect: true,
+      redirect: false,
     });
 
     if (res?.error) {
-      alert(res.error || "Erro ao autenticar");
+      setErrorMessage(res.error || "Erro ao autenticar");
       setLoading(false);
+    } else {
+      router.push(res?.url || "/");
     }
   };
 
@@ -92,6 +98,11 @@ export default function SignInForm() {
               </div>
             </div>
           </form>
+          {errorMessage && (
+            <div className="mt-3 text-error-600 text-md">
+              {errorMessage}
+            </div>
+          )}
           <div className="mt-5">
             <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
               Tem um token de acesso?{" "}
