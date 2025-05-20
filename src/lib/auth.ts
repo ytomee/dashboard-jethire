@@ -26,14 +26,14 @@ export const authOptions: NextAuthOptions = {
 
         const admin = await Administrator.findOne({ user });
         if (admin) {
-          const isPasswordValid = await bcrypt.compare(pass, admin.pass);
+          const isPasswordValid = await bcrypt.compare(pass, admin.password);
           if (!isPasswordValid) throw new Error("Credenciais inválidas.");;
           return {
             id: admin._id.toString(),
             name: admin.name,
             email: admin.email,
             type: "admin",
-            role: "jethire-admin"
+            role: admin.role,
           };
         }
 

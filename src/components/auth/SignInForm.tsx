@@ -24,7 +24,6 @@ export default function SignInForm() {
     const res = await signIn("credentials", {
       user,
       pass,
-      callbackUrl: "/",
       redirect: false,
     });
 
@@ -32,7 +31,7 @@ export default function SignInForm() {
       setErrorMessage(res.error || "Erro ao autenticar");
       setLoading(false);
     } else {
-      router.push(res?.url || "/");
+      router.push("/");
     }
   };
 
