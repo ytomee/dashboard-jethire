@@ -1,42 +1,69 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
-const DropzoneComponent: React.FC = () => {
+import Image from "next/image";
+
+interface DropzoneComponentProps {
+  onFileSelected: (file: File) => void;
+  initialPreview?: string | null;
+}
+
+const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ onFileSelected, initialPreview = null }) => {
+  const [preview, setPreview] = useState<string | null>(null);
+
   const onDrop = (acceptedFiles: File[]) => {
-    console.log("Files dropped:", acceptedFiles);
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      onFileSelected(file);
+      setPreview(URL.createObjectURL(file));
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    multiple: false,
     accept: {
       "image/png": [],
       "image/jpeg": [],
-      "image/webp": [],
-      "image/svg+xml": [],
     },
   });
+
+  const imageToShow = preview || initialPreview;
+
   return (
-    <>
-      <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
-        <form
-          {...getRootProps()}
-          className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
-        ${
+    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
+      <div
+        {...getRootProps()}
+        className={`dropzone rounded-xl border-dashed border-gray-300 ${
           isDragActive
             ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
             : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
-        }
-      `}
-          id="demo-upload"
-        >
-          {/* Hidden Input */}
-          <input {...getInputProps()} />
+        }`}
+        id="demo-upload"
+      >
+        <input {...getInputProps()} />
 
-          <div className="dz-message flex flex-col items-center m-0!">
-            {/* Icon Container */}
+        {imageToShow ? (
+          <div className="w-full flex justify-center max-w-[400px] max-h-[450px]">
+            <Image
+              src={imageToShow}
+              className="object-contain rounded-xl"
+              alt="Pré-visualização"
+            />
+          </div>
+        ) : (
+          <div className="dz-message flex flex-col items-center m-0! p-7 lg:p-10">
             <div className="mb-[22px] flex justify-center">
-              <div className="flex h-[68px] w-[68px]  items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
+              <div className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
                 <svg
                   className="fill-current"
                   width="29"
@@ -52,24 +79,20 @@ const DropzoneComponent: React.FC = () => {
                 </svg>
               </div>
             </div>
-
-            {/* Text Content */}
             <h4 className="mb-3 font-semibold text-gray-800 text-theme-lg dark:text-white/90">
-              {isDragActive ? "Deixe aqui os ficheiro" : "Arraste e largue aqui os ficheiros"}
+              {isDragActive ? "Deixe aqui o ficheiro" : "Arraste e largue aqui a imagem"}
             </h4>
-
-            <span className=" text-center mb-5 block w-full max-w-[290px] text-xs text-gray-700 dark:text-gray-400">
-              Arraste ou selecione os seus ficheiros PNG, JPG, WebP, SVG images aqui.
+            <span className="text-center mb-5 block w-full max-w-[290px] text-xs text-gray-700 dark:text-gray-400">
+              Aceita ficheiros PNG e JPG.
             </span>
-
             <span className="font-medium underline text-theme-sm text-brand-500">
               Procurar ficheiro
             </span>
           </div>
-        </form>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
-export default DropzoneComponent;
+export { DropzoneComponent };

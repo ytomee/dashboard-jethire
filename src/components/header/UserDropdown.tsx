@@ -43,7 +43,7 @@ export default function UserDropdown() {
           <Image
             width={44}
             height={44}
-            src="/images/default/user.png"
+            src={session?.user.image || "/images/default/user.png"}
             alt="User"
           />
         </span>

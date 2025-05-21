@@ -1,24 +1,59 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import Select from "../form/Select";
+
+import countries from "@/utils/country.json";
+import { ChevronDownIcon } from "@/icons";
 
 interface UserMetaCardProps {
   user: {
     city: string;
     country: string;
+    _id: string;
   };
 }
 
-export default function UserAddressCard({user}: UserMetaCardProps) {
+const options = countries.map(country => ({
+  value: country.nome,
+  label: country.nome
+}));
+
+export default function UserAddressCard({ user }: UserMetaCardProps) {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    console.log("Saving changes...");
-    closeModal();
+
+  const [city, setCity] = useState(user.city);
+  const [country, setCountry] = useState(user.country);
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSelect = (value: string) => {
+    setCountry(value);
   };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/profile/edit/address/${user._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ city, country }),
+      });
+
+      if (!res.ok) throw new Error("Erro ao atualizar");
+
+      closeModal();
+    } catch (err) {
+      console.error("Erro ao guardar alterações:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -72,8 +107,9 @@ export default function UserAddressCard({user}: UserMetaCardProps) {
           </button>
         </div>
       </div>
+
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
-        <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
+        <div className="relative w-full p-4 overflow-y-auto bg-white rounded-3xl dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
               Editar localização
@@ -82,17 +118,37 @@ export default function UserAddressCard({user}: UserMetaCardProps) {
               Atualize os seus dados para manter o seu perfil em dia.
             </p>
           </div>
-          <form className="flex flex-col">
-            <div className="px-2 overflow-y-auto custom-scrollbar">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSave();
+            }}
+            className="flex flex-col"
+          >
+            <div className="px-2 overflow-y-auto">
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>
                   <Label>País</Label>
-                  <Input type="text" defaultValue={user.country} />
+                  <div className="relative">
+                    <Select 
+                      onChange={handleSelect}
+                      options={options}
+                      placeholder={user.country || "Selecionar país"}
+                      className="dark:bg-dark-900"
+                    />
+                    <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
                 </div>
 
                 <div>
                   <Label>Cidade</Label>
-                  <Input type="text" defaultValue={user.city} />
+                  <Input
+                    type="text"
+                    defaultValue={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -100,8 +156,8 @@ export default function UserAddressCard({user}: UserMetaCardProps) {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 Fechar
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Guardar alterações
+              <Button size="sm" disabled={loading}>
+                {loading ? "A guardar..." : "Guardar alterações"}
               </Button>
             </div>
           </form>

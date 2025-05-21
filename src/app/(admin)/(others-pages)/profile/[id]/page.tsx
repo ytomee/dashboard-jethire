@@ -47,6 +47,7 @@ export default function ProfilePage() {
           Perfil
         </h3>
         <div className="space-y-6">
+          
           {loading && (
             <div className="dark:text-white flex items-center gap-2">
               <Loader className="animate-spin" /> A carregar perfil...
@@ -56,6 +57,7 @@ export default function ProfilePage() {
           <UserMetaCard user={user} />
           <UserInfoCard user={user} />
           <UserAddressCard user={user} />
+
         </div>
       </div>
     </div>

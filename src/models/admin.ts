@@ -15,6 +15,10 @@ const administratorSchema = new mongoose.Schema({
   city: { type: String },
   country: { type: String },
   phone: { type: String },
+  socials: [{
+    platform: String,
+    url: String
+  }],
   isActive: {
     type: Boolean,
     default: true,

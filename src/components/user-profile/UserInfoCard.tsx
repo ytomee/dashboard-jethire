@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -8,6 +8,7 @@ import Label from "../form/Label";
 
 interface UserMetaCardProps {
   user: {
+    _id: string;
     name: string;
     email: string;
     role: string;
@@ -20,20 +21,69 @@ interface UserMetaCardProps {
 }
 
 export default function UserInfoCard({ user }: UserMetaCardProps) {
-  const { isOpen, openModal, closeModal } = useModal();
 
-  const handleSave = () => {
-    console.log("Saving changes...");
-    closeModal();
+  const { isOpen, openModal, closeModal } = useModal();
+  const [loading, setLoading] = useState(false);
+
+  const [phone, setPhone] = useState(user.phone);
+  const [links, setLinks] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const socialLinks = useMemo(() => {
+    return user.socials?.reduce((acc, social) => {
+      acc[social.platform.toLowerCase()] = social.url;
+      return acc;
+    }, {} as Record<string, string>) || {};
+  }, [user.socials]);
+
+  useEffect(() => {
+    setLinks(socialLinks);
+  }, [socialLinks]);
+
+  const validateLink = (platform: string, url: string) => {
+    const prefix = `https://www.${platform.toLowerCase()}.com/`;
+    if (!url) return "";
+    if (!url.startsWith(prefix)) return `Deve começar com ${prefix}`;
+    return "";
   };
 
-  const socialLinks = user.socials?.reduce((acc, social) => {
-    acc[social.platform.toLowerCase()] = social.url;
-    return acc;
-  }, {} as Record<string, string>) || {};
+  const handleLinkChange = (platform: string, value: string) => {
+    setLinks((prev) => ({ ...prev, [platform]: value }));
+    const error = validateLink(platform, value);
+    setErrors((prev) => ({ ...prev, [platform]: error }));
+  };
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
+
+  const hasErrors = Object.values(errors).some((err) => err);
+
+  const handleSave = async () => {
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(`/api/profile/edit/info/${user._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone,
+          socials: Object.entries(links)
+            .filter(([, url]) => url.trim() !== "")
+            .map(([platform, url]) => ({ platform, url })),
+        }),
+      });
+
+      if (!res.ok) throw new Error("Erro ao atualizar");
+
+      closeModal();
+    } catch (err) {
+      console.error("Erro ao guardar alterações:", err);
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   return (
@@ -61,7 +111,7 @@ export default function UserInfoCard({ user }: UserMetaCardProps) {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4 mt-4 lg:mt-7 lg:gap-7 2xl:gap-x-32">
+          <div className="flex flex-wrap gap-4 mt-4 lg:mt-7 lg:gap-7 2xl:gap-x-25">
             {["Instagram", "Facebook", "X", "LinkedIn"].map((platform) => (
               <div key={platform}>
                 <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">{platform}</p>
@@ -71,9 +121,9 @@ export default function UserInfoCard({ user }: UserMetaCardProps) {
                       href={socialLinks[platform.toLowerCase()]}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:underline text-blue-600 dark:text-blue-400"
+                      className="hover:underline dark:text-white"
                     >
-                      {truncateText(socialLinks[platform.toLowerCase()], 50)}
+                      {truncateText(socialLinks[platform.toLowerCase()], 25)}
                     </a>
                   ) : (
                     <span className="text-gray-400 italic">Não definido</span>
@@ -117,27 +167,26 @@ export default function UserInfoCard({ user }: UserMetaCardProps) {
               Atualize o seu perfil com informações atuais.
             </p>
           </div>
+
           <form className="flex flex-col">
             <div className="custom-scrollbar px-2 pb-3">
+              {/* Informação pessoal */}
               <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Informação pessoal
                 </h5>
-
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-1 lg:col-span-2">
                     <Label>Nome</Label>
-                    <Input type="text" defaultValue={user.name} />
+                    <Input type="text" disabled defaultValue={user.name} />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email</Label>
-                    <Input type="text" defaultValue={user.email} />
+                    <Input type="text" disabled defaultValue={user.email} />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Telemóvel</Label>
-                    <Input type="text" defaultValue={user.phone} />
+                    <Input type="text" defaultValue={phone} onChange={(e) => setPhone(e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -146,15 +195,19 @@ export default function UserInfoCard({ user }: UserMetaCardProps) {
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Redes Sociais
                 </h5>
-
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   {["Facebook", "X", "LinkedIn", "Instagram"].map((platform) => (
                     <div key={platform}>
                       <Label>{platform}</Label>
                       <Input
                         type="text"
-                        defaultValue={socialLinks[platform.toLowerCase()] || ""}
+                        placeholder={`https://www.${platform.toLowerCase()}.com/`}
+                        defaultValue={links[platform.toLowerCase()] || ""}
+                        onChange={(e) => handleLinkChange(platform.toLowerCase(), e.target.value)}
                       />
+                      {errors[platform.toLowerCase()] && (
+                        <p className="mt-1 text-sm text-red-500">{errors[platform.toLowerCase()]}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -165,8 +218,8 @@ export default function UserInfoCard({ user }: UserMetaCardProps) {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 Fechar
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Guardar alterações
+              <Button size="sm" onClick={handleSave} disabled={hasErrors}>
+                {loading ? "A guardar..." : "Guardar alterações"}
               </Button>
             </div>
           </form>
