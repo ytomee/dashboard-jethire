@@ -31,7 +31,9 @@ export default function SignInForm() {
       setErrorMessage(res.error || "Erro ao autenticar");
       setLoading(false);
     } else {
-      router.push("/");
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
     }
   };
 
