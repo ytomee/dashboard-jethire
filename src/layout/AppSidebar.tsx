@@ -44,6 +44,12 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/",
   },
+    {
+    icon: <Building2 />,
+    name: "Editar empresa",
+    roles: ["admin", "manager", "recruiter"],
+    path: "/company/edit",
+  },
   {
     icon: <Building2 />,
     name: "Empresas",

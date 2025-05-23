@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Button from "../ui/button/Button";
 import { DropzoneComponent } from "../profile/EditPFP";
@@ -35,14 +35,24 @@ export default function UserMetaCard({ user }: UserMetaCardProps) {
   
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
+
+  useEffect(() => {
+    if (selectedFile) {
+      setCanSubmit(false); 
+      const timer = setTimeout(() => setCanSubmit(true), 1000);
+      return () => clearTimeout(timer); 
+    } else {
+      setCanSubmit(false);
+    }
+  }, [selectedFile]);
 
   const handleSave = async () => {
-    
     if (!selectedFile) return;
 
     const formData = new FormData();
     formData.append("pfp", selectedFile);
-    
+
     try {
       const res = await fetch(`/api/profile/edit/meta/${user._id}`, {
         method: "PUT",
@@ -52,13 +62,11 @@ export default function UserMetaCard({ user }: UserMetaCardProps) {
       if (!res.ok) throw new Error("Erro ao fazer upload da imagem.");
 
       const data = await res.json();
-      console.log("Imagem enviada com sucesso:", data);
-
+      console.log("Sucesso:", data);
       closeModal();
     } catch (error) {
       console.error("Erro ao enviar imagem:", error);
     }
-    
   };
 
   const readableRole = rolesMap[user.role] || user.role;
@@ -149,7 +157,7 @@ export default function UserMetaCard({ user }: UserMetaCardProps) {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 Fechar
               </Button>
-              <Button size="sm" onClick={handleSave} disabled={!selectedFile}>
+              <Button size="sm" onClick={handleSave} disabled={!selectedFile || !canSubmit}>
                 Guardar alterações
               </Button>
             </div>

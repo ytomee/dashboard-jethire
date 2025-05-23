@@ -88,6 +88,8 @@ function TeamCard({
     <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
       <div className="flex items-center gap-4">
         <Image
+          width={200}
+          height={200}
           src={profileImage}
           alt="Foto de perfil"
           className="w-20 h-20 rounded-full object-cover border border-gray-300 dark:border-neutral-700"

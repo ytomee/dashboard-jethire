@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const descriptionSchema = new Schema(
   {
     title: { type: String, required: true },
-    content: { type: String, required: true },
+    text: { type: String, required: true },
   },
   { _id: false }
 );
@@ -77,10 +77,18 @@ const companySchema = new Schema(
     workType: String, 
     foundationYear: Number,
 
-    banner: String,
-    banner_id: String,
-    pfp: String,
-    pfp_id: String,
+    tags: { type: [String], default: [] },
+    remote: { type: String, default: "" },
+
+    banner: {
+      secure_url: String,
+      public_id: String,
+    },
+
+    logo: {
+      secure_url: String,
+      public_id: String,
+    },
 
     contact: {
       email: String,

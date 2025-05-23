@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-
 import Image from "next/image";
 
 interface DropzoneComponentProps {
@@ -9,7 +8,10 @@ interface DropzoneComponentProps {
   initialPreview?: string | null;
 }
 
-const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ onFileSelected, initialPreview = null }) => {
+const Logo: React.FC<DropzoneComponentProps> = ({
+  onFileSelected,
+  initialPreview = null,
+}) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -34,13 +36,14 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ onFileSelected, i
     accept: {
       "image/png": [],
       "image/jpeg": [],
+      "image/svg+xml": [],
     },
   });
 
   const imageToShow = preview || initialPreview;
 
   return (
-    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
+    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:border-gray-700 rounded-xl">
       <div
         {...getRootProps()}
         className={`dropzone rounded-xl border-dashed border-gray-300 ${
@@ -53,19 +56,33 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ onFileSelected, i
         <input {...getInputProps()} />
 
         {imageToShow ? (
-          <div className="w-full flex justify-center max-w-[400px] max-h-[450px]">
+          <div className="w-full flex justify-center h-[250px] relative group rounded-xl overflow-hidden">
             <Image
-              width={400}
-              height={400}
               src={imageToShow}
-              className="object-contain rounded-xl"
               alt="Pré-visualização"
+              fill
+              className="object-contain"
             />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="currentColor"
+                viewBox="0 0 18 18"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z"
+                />
+              </svg>
+            </div>
           </div>
         ) : (
-          <div className="dz-message flex flex-col items-center m-0! p-7 lg:p-10">
+          <div className="dz-message h-[250px] flex flex-col items-center m-0! p-7 lg:p-10">
             <div className="mb-[22px] flex justify-center">
               <div className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                {/* ícone do upload */}
                 <svg
                   className="fill-current"
                   width="29"
@@ -82,10 +99,12 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ onFileSelected, i
               </div>
             </div>
             <h4 className="mb-3 font-semibold text-gray-800 text-theme-lg dark:text-white/90">
-              {isDragActive ? "Deixe aqui o ficheiro" : "Arraste e largue aqui a imagem"}
+              {isDragActive
+                ? "Deixe aqui o ficheiro"
+                : "Arraste e largue aqui a imagem"}
             </h4>
             <span className="text-center mb-5 block w-full max-w-[290px] text-xs text-gray-700 dark:text-gray-400">
-              Aceita ficheiros .png e .jpeg
+              Aceita ficheiros .png, .jpeg e .svg
             </span>
             <span className="font-medium underline text-theme-sm text-brand-500">
               Procurar ficheiro
@@ -97,4 +116,4 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ onFileSelected, i
   );
 };
 
-export { DropzoneComponent };
+export { Logo };
