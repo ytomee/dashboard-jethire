@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -31,9 +32,17 @@ export default function SignInForm() {
       setErrorMessage(res.error || "Erro ao autenticar");
       setLoading(false);
     } else {
-      setTimeout(() => {
-        router.push("/");
-      }, 3000);
+      let tries = 0;
+      const maxTries = 10;
+    
+      const waitForSession = async () => {
+      const session = await getSession();
+      if (session || tries >= maxTries) {
+        router.push = "/";
+      } else {
+        tries++;
+        setTimeout(waitForSession, 300);
+      }
     }
   };
 
