@@ -36,13 +36,15 @@ export default function SignInForm() {
       const maxTries = 10;
     
       const waitForSession = async () => {
-      const session = await getSession();
-      if (session || tries >= maxTries) {
-        router.push = "/";
-      } else {
-        tries++;
-        setTimeout(waitForSession, 300);
-      }
+        const session = await getSession();
+        if (session || tries >= maxTries) {
+          router.push("/");
+        } else {
+          tries++;
+          setTimeout(waitForSession, 300);
+        }
+      };
+      waitForSession();
     }
   };
 
