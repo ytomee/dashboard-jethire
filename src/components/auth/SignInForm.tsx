@@ -38,7 +38,7 @@ export default function SignInForm() {
       const waitForSession = async () => {
         const session = await getSession();
         if (session || tries >= maxTries) {
-          router.push("/");
+          window.location.href = "/";
         } else {
           tries++;
           setTimeout(waitForSession, 300);
