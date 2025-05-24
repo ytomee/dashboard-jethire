@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
 import Input from "@/components/form/input/InputField";
@@ -10,7 +9,6 @@ import { EyeCloseIcon, EyeIcon, Loader } from "@/icons";
 import { signIn } from "next-auth/react";
 
 export default function SignInForm() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [user, setUsername] = useState("");
