@@ -20,8 +20,10 @@ const userSchema = new mongoose.Schema(
       default: 'recruiter',
       required: true,
     },
-    pfp: { type: String },
-    pfp_id: { type: String },  
+    logo: {
+      secure_url: String,
+      public_id: String,
+    },
     city: { type: String },
     country: { type: String },
     phone: { type: String },

@@ -36,14 +36,14 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
         return NextResponse.json({ error: "Membro da equipa não encontrado" }, { status: 404 });
       }
 
-      if (teamMember.pfp_id) {
-        await deleteFromCloudinary(teamMember.pfp_id);
+      if (teamMember.logo.public_id) {
+        await deleteFromCloudinary(teamMember.logo.public_id);
       }
 
       const uploadResult = await uploadToCloudinary(buffer);
 
-      teamMember.pfp = uploadResult.secure_url;
-      teamMember.pfp_id = uploadResult.public_id;
+      teamMember.logo.secure_url = uploadResult.secure_url;
+      teamMember.logo.public_id = uploadResult.public_id;
 
       await company.save();
 
@@ -55,14 +55,14 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       return NextResponse.json({ error: "Admin não encontrado" }, { status: 404 });
     }
 
-    if (admin.pfp_id) {
-      await deleteFromCloudinary(admin.pfp_id);
+    if (admin.logo.public_id) {
+      await deleteFromCloudinary(admin.logo.public_id);
     }
 
     const uploadResult = await uploadToCloudinary(buffer);
 
-    admin.pfp = uploadResult.secure_url;
-    admin.pfp_id = uploadResult.public_id;
+    admin.logo.secure_url = uploadResult.secure_url;
+    admin.logo.public_id = uploadResult.public_id;
 
     await admin.save();
 
