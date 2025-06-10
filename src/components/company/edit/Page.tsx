@@ -25,7 +25,7 @@ export default function CompanyEditPage() {
   const [contacts, setContacts] = useState({ address: "", email: "", phone: "" });
   const [descriptions, setDescriptions] = useState<{ title: string; text: string }[]>([]);
 
-  const [originalData, setOriginalData] = useState<{ info: typeof info; tagsInfo: typeof tagsInfo; contacts: typeof contacts; descriptions: typeof descriptions; bannerUrl: string | null; logoUrl: string | null; } | null>(null);
+  const [originalData, setOriginalData] = useState<{ id?: string; info: typeof info; tagsInfo: typeof tagsInfo; contacts: typeof contacts; descriptions: typeof descriptions; bannerUrl: string | null; logoUrl: string | null; } | null>(null);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -37,7 +37,7 @@ export default function CompanyEditPage() {
         if (!res.ok) throw new Error("Erro ao procurar os dados");
 
         const data = await res.json();
-
+        const fetchedID = data._id || null;
         const fetchedInfo = { name: data.name || "", slogan: data.slogan || "", city: data.city || "", country: data.country || "" };
         const fetchedTagsInfo = { remote: data.remote || "", tags: data.tags || [] };
         const fetchedContacts = { address: data.address || "", email: data.contact?.email || "", phone: data.contact?.phone || "" };
@@ -49,7 +49,7 @@ export default function CompanyEditPage() {
         setTagsInfo(fetchedTagsInfo);
         setContacts(fetchedContacts);
         setDescriptions(fetchedDescriptions);
-        setOriginalData({ info: fetchedInfo, tagsInfo: fetchedTagsInfo, contacts: fetchedContacts, descriptions: fetchedDescriptions, bannerUrl: fetchedBanner, logoUrl: fetchedLogo });
+        setOriginalData({ id: fetchedID, info: fetchedInfo, tagsInfo: fetchedTagsInfo, contacts: fetchedContacts, descriptions: fetchedDescriptions, bannerUrl: fetchedBanner, logoUrl: fetchedLogo });
 
       } catch (error) {
         console.error("Erro ao procurar os dados da empresa:", error);
@@ -149,7 +149,7 @@ export default function CompanyEditPage() {
     <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
       <p className="text-s text-gray-900 dark:text-gray-300 mb-3">
         Pode visualizar o perfil da sua empresa{" "}
-        <Link href="/" className="underline">aqui</Link>.
+        <Link href={`https://jethire.pt/company/${originalData?.id}`} target="_blank" rel="noopener noreferrer" className="underline">aqui</Link>
       </p>
 
       <div className="grid grid-cols-12 gap-4 mb-8">
