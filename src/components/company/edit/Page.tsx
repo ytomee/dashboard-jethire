@@ -12,6 +12,7 @@ import { Tags } from "@/components/company/edit/body/Tags";
 import { Descriptions } from "@/components/company/edit/body/Descriptions";
 
 import Button from "@/components/ui/button/Button";
+import Alert from "@/components/ui/alert/Alert";
 import { PlusIcon } from "@/icons";
 
 export default function CompanyEditPage() {
@@ -26,6 +27,10 @@ export default function CompanyEditPage() {
   const [descriptions, setDescriptions] = useState<{ title: string; text: string }[]>([]);
 
   const [originalData, setOriginalData] = useState<{ info: typeof info; tagsInfo: typeof tagsInfo; contacts: typeof contacts; descriptions: typeof descriptions; bannerUrl: string | null; logoUrl: string | null; } | null>(null);
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -58,6 +63,18 @@ export default function CompanyEditPage() {
 
     fetchCompanyData();
   }, [session]);
+
+  useEffect(() => {
+    if (showSuccessAlert) {
+      setVisible(true);
+      const hideTimeout = setTimeout(() => setVisible(false), 3500);
+      const removeTimeout = setTimeout(() => setShowSuccessAlert(false), 4000);
+      return () => {
+        clearTimeout(hideTimeout);
+        clearTimeout(removeTimeout);
+      };
+    }
+  }, [showSuccessAlert]);
 
   const arraysEqual = (a: string[], b: string[]): boolean => {
     if (a.length !== b.length) return false;
@@ -97,9 +114,11 @@ export default function CompanyEditPage() {
       return;
     }
 
+    setIsSaving(true);
+    setShowSuccessAlert(false);
+
     const formData = new FormData();
     formData.append("name", info.name);
-
     if (info.slogan) formData.append("slogan", info.slogan);
     if (info.city) formData.append("city", info.city);
     if (info.country) formData.append("country", info.country);
@@ -108,7 +127,6 @@ export default function CompanyEditPage() {
     formData.append("contacts", JSON.stringify(contacts));
     formData.append("tags", JSON.stringify(tagsInfo.tags));
     formData.append("descriptions", JSON.stringify(descriptions));
-
     if (banner) formData.append("banner", banner);
     if (logo) formData.append("logo", logo);
 
@@ -123,12 +141,16 @@ export default function CompanyEditPage() {
         throw new Error(`Erro ao guardar os dados: ${errorText}`);
       }
 
-      setOriginalData({ info: { ...info }, tagsInfo: { ...tagsInfo }, contacts: { ...contacts }, descriptions: [...descriptions], bannerUrl: originalData?.bannerUrl ?? null, logoUrl: originalData?.logoUrl ?? null });
+      setOriginalData({ info: { ...info }, tagsInfo: { ...tagsInfo }, contacts: { ...contacts }, descriptions: [...descriptions], bannerUrl: originalData?.bannerUrl ?? null, logoUrl: originalData?.logoUrl ?? null});
       setBanner(null);
       setLogo(null);
 
+      setShowSuccessAlert(true);
+
     } catch (error) {
       console.error("Erro ao enviar para a API:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -169,8 +191,31 @@ export default function CompanyEditPage() {
       <Descriptions descriptions={descriptions} setDescriptions={setDescriptions} />
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} size="sm" variant="primary" startIcon={<PlusIcon />} disabled={!hasChanges()}>Guardar alterações</Button>
+        <Button
+          onClick={handleSave}
+          size="sm"
+          variant="primary"
+          startIcon={<PlusIcon />}
+          disabled={!hasChanges() || isSaving}
+        >
+          {isSaving ? "A guardar..." : "Guardar alterações"}
+        </Button>
       </div>
+
+      {showSuccessAlert && (
+        <div
+          className={`fixed z-[9999] max-w-md transition-all duration-500 ease-in-out
+            ${visible ? "opacity-100 bottom-5 left-5" : "opacity-0 bottom-0 left-0"}
+          `}
+        >
+          <Alert
+            variant="success"
+            title="Alterações guardadas"
+            message="O perfil foi atualizado com sucesso."
+            showLink={false}
+          />
+        </div>
+      )}
     </div>
   );
 }

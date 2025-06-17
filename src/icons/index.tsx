@@ -63,9 +63,12 @@ import UserRoundSearch from "./user-round-search.svg";
 import Refresh from "./refresh-ccw.svg";
 import Logout from "./log-out.svg";
 import Loader from "./loader-circle.svg";
-
+import ClipboardPen from "./clipboard-pen.svg";
+import FilePlus2 from "./file-plus-2.svg"
 
 export {
+  FilePlus2,
+  ClipboardPen,
   Loader,
   Logout,
   Refresh,

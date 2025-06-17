@@ -18,6 +18,7 @@ import {
   TableIcon,
   Building2,
   UsersRound,
+  ClipboardPen
 } from "../icons/index";
 
 type Role = "jethire-admin" | "admin" | "manager" | "recruiter";
@@ -53,17 +54,17 @@ const navItems: NavItem[] = [
   {
     icon: <Building2 />,
     name: "Empresas",
-    roles: ["jethire-admin"],
+    roles: ["jethire-admin", "admin"],
     subItems: [
       {
         name: "Lista",
         path: "/company/list",
-        roles: ["jethire-admin"],
+        roles: ["jethire-admin", "admin"],
       },
       {
         name: "Registos",
         path: "/company/requests",
-        roles: ["jethire-admin"],
+        roles: ["jethire-admin", "admin"],
       },
     ],
   },
@@ -74,6 +75,15 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Ver equipa", path: "/team/list" },
       { name: "+ Adicionar", path: "/team/add" },
+    ],
+  },
+  {
+    icon: <ClipboardPen />,
+    name: "Ofertas",
+    roles: ["admin", "manager", "recruiter"],
+    subItems: [
+      { name: "Ver ofertas", path: "/offer/list" },
+      { name: "+ Adicionar", path: "/offer/add" },
     ],
   },
   {
@@ -109,7 +119,7 @@ const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
     name: "Charts",
-    roles: ["jethire-admin"],
+    roles: ["jethire-admin", "admin"],
     subItems: [
       { name: "Line Chart", path: "/line-chart" },
       { name: "Bar Chart", path: "/bar-chart" },
@@ -118,7 +128,7 @@ const othersItems: NavItem[] = [
   {
     icon: <BoxCubeIcon />,
     name: "UI Elements",
-    roles: ["jethire-admin"],
+    roles: ["jethire-admin", "admin"],
     subItems: [
       { name: "Alerts", path: "/alerts" },
       { name: "Avatar", path: "/avatars" },
@@ -131,7 +141,7 @@ const othersItems: NavItem[] = [
   {
     icon: <PlugInIcon />,
     name: "Authentication",
-    roles: ["jethire-admin"],
+    roles: ["jethire-admin", "admin"],
     subItems: [
       { name: "Sign In", path: "/signin" },
       { name: "Sign Up", path: "/signup" },
