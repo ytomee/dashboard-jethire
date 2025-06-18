@@ -26,13 +26,14 @@ export default function FunctionAndLevel({ role, level, onChange }: FunctionAndL
     <>
       <div className="col-span-12 md:col-span-8">
         <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Função</p>
-        <Input placeholder="Full-Stack Developer" value={role} onChange={e => onChange("role", e.target.value)} />
+        <Input required placeholder="Full-Stack Developer" value={role} onChange={e => onChange("role", e.target.value)} />
       </div>
 
       <div className="col-span-12 md:col-span-4">
         <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Nível</p>
         <div className="relative">
           <Select
+            required
             options={levelOptions}
             placeholder="Selecionar"
             value={level || undefined}

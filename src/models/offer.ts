@@ -19,7 +19,16 @@ const offerSchema = new Schema(
     type: { type: String, required: true },
     level: { type: String, required: true },
     experience: { type: String },
-    salary: { type: String },
+    salary: {
+      salaryMin: {
+        type: Number,
+        required: false,
+      },
+      salaryMax: {
+        type: Number,
+        required: false,
+      },
+    },
     remote: { type: String },
     tags: { type: [String], default: [] },
     description: [descriptionSchema],
@@ -29,6 +38,10 @@ const offerSchema = new Schema(
         ref: "User",
       }
     ],
+    isMinorFriendly: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: true,

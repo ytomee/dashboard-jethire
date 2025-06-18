@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
           if (!isPasswordValid) throw new Error("Credenciais inválidas.");;
           return {
             id: admin._id.toString(),
-            image: admin.pfp, //EDITAR PARA O NOVO MODEL
+            image: admin.logo.secure_url,
             name: admin.name,
             email: admin.email,
             type: "admin",
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
             if(!isPasswordValid) throw new Error("Credenciais inválidas.");;
             return {
               id: teamMember._id.toString(),
-              image: teamMember.pfp,
+              image: teamMember.logo.secure_url,
               name: teamMember.name,
               email: teamMember.email,
               type: "company",

@@ -15,7 +15,10 @@ interface UserMetaCardProps {
     role: string;
     city: string;
     country: string;
-    pfp: string;
+    logo?: {
+      secure_url: string;
+      public_id: string;
+    };
     socials?: {
       platform: string;
       url: string;
@@ -81,7 +84,7 @@ export default function UserMetaCard({ user }: UserMetaCardProps) {
                 <Image
                   width={80}
                   height={80}
-                  src={user.pfp || "/images/default/user.png"}
+                  src={user.logo?.secure_url || "/images/default/user.png"}
                   alt="User"
                   className="object-cover w-full h-full transition duration-300 group-hover:brightness-50"
                 />
@@ -150,7 +153,7 @@ export default function UserMetaCard({ user }: UserMetaCardProps) {
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar px-2 pb-3">
-              <DropzoneComponent onFileSelected={setSelectedFile} initialPreview={user.pfp || null} />
+              <DropzoneComponent onFileSelected={setSelectedFile} initialPreview={user.logo?.secure_url || null} />
             </div>
 
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">

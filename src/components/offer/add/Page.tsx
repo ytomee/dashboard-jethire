@@ -8,6 +8,7 @@ import { Descriptions } from "@/components/offer/add/Body/Descriptions";
 import FunctionAndLevel from "@/components/offer/add/Body/FunctionAndLevel";
 import TypeAndExperience from "@/components/offer/add/Body/TypeAndExperience";
 import SalaryRange from "@/components/offer/add/Body/SalaryRange";
+import { MinorFriendly } from "@/components/offer/add/Body/MinorFriendly";
 
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
@@ -26,11 +27,12 @@ export default function AddOfferPage() {
     remote: "",
     tags: [] as string[],
     description: [] as { title: string; text: string }[],
+    isMinorFriendly: false,
   });
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -66,7 +68,7 @@ export default function AddOfferPage() {
 
   const onClose = () => {
     setIsOpen(false);
-    router.push("/offers/list");
+    router.push("/offer/list");
   };
 
   return (
@@ -105,6 +107,12 @@ export default function AddOfferPage() {
             description={formData.description}
             onChange={handleDescriptionChange}
           />
+
+          <MinorFriendly
+            isMinorFriendly={formData.isMinorFriendly}
+            onChange={handleChange}
+          />
+
         </div>
 
         <div className="flex justify-end">

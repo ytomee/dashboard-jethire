@@ -10,11 +10,14 @@ interface Offer {
   level: string;
   type: string;
   experience: string;
-  salaryMin: string;
-  salaryMax: string;
+  salary: {
+    salaryMin: string;
+    salaryMax: string;
+  };
   remote: string;
   tags: string[];
   isActive: boolean;
+  isMinorFriendly: boolean;
 }
 
 export default function ListOfferPage() {
@@ -70,8 +73,8 @@ export default function ListOfferPage() {
     normalize(offer.remote).includes(searchText) ||
     normalize(offer.experience).includes(searchText) ||
     normalize(offer.level).includes(searchText) ||
-    (offer.salaryMin && offer.salaryMin.includes(searchText)) ||
-    (offer.salaryMax && offer.salaryMax.includes(searchText)) ||
+    (offer.salary.salaryMin && offer.salary.salaryMin.includes(searchText)) ||
+    (offer.salary.salaryMax && offer.salary.salaryMax.includes(searchText)) ||
     offer.tags.some((tag) => normalize(tag).includes(searchText))
   )
   .sort((a, b) => (a.isActive === b.isActive ? 0 : a.isActive ? -1 : 1));
@@ -98,9 +101,9 @@ export default function ListOfferPage() {
                 <b className="text-base dark:text-gray-100">Nível:</b> {offer.level}
               </p>
               <p className="text-sm text-gray-800 dark:text-gray-300 mb-2">
-                <b className="text-base dark:text-gray-100">Tipo:</b> {{ fulltime: "Tempo inteiro", parttime: "Part-time" }[offer.type]}
+                <b className="text-base dark:text-gray-100">Tipo:</b> {{ fulltime: "Tempo inteiro", parttime: "Part-time", internship: "Estágio" }[offer.type]}
               </p>
-              <p className="text-sm text-gray-800 dark:text-gray-300 mb-2 capitalize">
+              <p className="text-sm text-gray-800 dark:text-gray-300 mb-2">
                 <b className="text-base dark:text-gray-100">Modalidade:</b> {{ remote: "Remoto", presencial: "Presencial", hybrid: "Híbrido" }[offer.remote] || "Não definido"}
               </p>
               <p className="text-sm text-gray-800 dark:text-gray-300 mb-2">
@@ -110,12 +113,15 @@ export default function ListOfferPage() {
                 }[offer.experience] || "Não definida"}
               </p>
               <p className="text-sm text-gray-800 dark:text-gray-300 mb-2">
+                <b className="text-base dark:text-gray-100">Aceita menores: </b> {offer.isMinorFriendly === false ? "Não" : "Sim"}
+              </p>
+              <p className="text-sm text-gray-800 dark:text-gray-300 mb-2">
                 <b className="text-base dark:text-gray-100">Salário:</b>{" "}
-                {offer.salaryMin && offer.salaryMax
-                  ? `${offer.salaryMin}€ - ${offer.salaryMax}€`
-                  : offer.salaryMin
-                  ? `${offer.salaryMin}€`
-                  : "Não definido"}
+                {offer.salary?.salaryMin && offer.salary?.salaryMax
+                ? `${offer.salary.salaryMin}€ - ${offer.salary.salaryMax}€`
+                : offer.salary?.salaryMin
+                ? `${offer.salary.salaryMin}€`
+                : "Não definido"}
               </p>
               <div className="flex flex-wrap gap-2 mb-9">
                 {offer.tags.map((tag, index) => (

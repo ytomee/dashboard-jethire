@@ -20,8 +20,18 @@ export async function POST(req: NextRequest) {
   }
 
   const data = await req.json();
+  const {
+    salaryMin,
+    salaryMax,
+    ...rest
+  } = data;
+
   const newOffer = await Offer.create({
-    ...data,
+    ...rest,
+    salary: {
+      salaryMin: Number(salaryMin),
+      salaryMax: Number(salaryMax),
+    },
     company: company._id,
   });
 

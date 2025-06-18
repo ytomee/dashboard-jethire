@@ -8,6 +8,7 @@ import { ChevronDownIcon } from "@/icons";
 const typeOptions = [
   { value: "fulltime", label: "Tempo inteiro" },
   { value: "parttime", label: "Part-time" },
+  { value: "internship", label: "Estágio"},
 ];
 
 const experienceOptions = [
@@ -32,6 +33,7 @@ export default function TypeAndExperience({ type, experience, onChange }: TypeAn
         <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tipo</p>
         <div className="relative">
           <Select
+            required
             options={typeOptions}
             placeholder="Selecionar"
             value={type}
