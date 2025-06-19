@@ -145,9 +145,9 @@ export default function ListOfferPage() {
                 )}
 
                 <div className="relative group inline-block">
-                  <button className="text-dark hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-500 text-xs font-medium">
+                  <a href={`/offer/list/candidates/${offer._id}`} className="text-dark hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-500 text-xs font-medium">
                     <UsersRound />
-                  </button>
+                  </a>
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
                     Ver candidatos
                   </div>

@@ -8,6 +8,18 @@ const descriptionSchema = new Schema(
   { _id: false }
 );
 
+const candidateSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  isSeen: {
+    type: Boolean,
+    default: false,
+  },
+}, { _id: false });
+
 const offerSchema = new Schema(
   {
     company: {
@@ -32,12 +44,7 @@ const offerSchema = new Schema(
     remote: { type: String },
     tags: { type: [String], default: [] },
     description: [descriptionSchema],
-    favorites: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      }
-    ],
+    candidates: [candidateSchema],
     isMinorFriendly: {
       type: Boolean,
       default: false,
