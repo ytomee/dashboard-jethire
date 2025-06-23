@@ -1,0 +1,119 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+
+interface Message {
+  id: number;
+  sender: "me" | "other";
+  name: string;
+  avatar: string;
+  text: string;
+  time: string;
+}
+
+export default function ChatPage() {
+  const [message, setMessage] = useState("");
+
+const messages: Message[] = [
+  {
+    id: 1,
+    sender: "other",
+    name: "Harvey Specter",
+    avatar: "https://res.cloudinary.com/dngcufwm8/image/upload/v1750243640/pfp/axbqouuzhhst19sznvth.png",
+    text: "Excuses don’t win championships.",
+    time: "10:01",
+  },
+  {
+    id: 2,
+    sender: "me",
+    name: "Tu",
+    avatar: "https://res.cloudinary.com/dngcufwm8/image/upload/v1744222363/pfp/ufwnrhwcvgutrbzulwpg.jpg",
+    text: "Oh yeah, did Michael Jordan tell you that?",
+    time: "10:02",
+  },
+  {
+    id: 3,
+    sender: "other",
+    name: "Harvey Specter",
+    avatar: "https://res.cloudinary.com/dngcufwm8/image/upload/v1750243640/pfp/axbqouuzhhst19sznvth.png",
+    text: "No, I told him that.",
+    time: "10:02",
+  },
+];
+
+  return (
+    <div className="h-[calc(100vh-170px)] flex flex-col justify-between rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
+      <div className="flex-1 overflow-y-auto space-y-4">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex items-center gap-2 ${
+              msg.sender === "me" ? "justify-end" : "justify-start"
+            }`}
+          >
+            {msg.sender === "other" && (
+              <Image
+                src={msg.avatar}
+                alt={msg.name}
+                width={100}
+                height={100}
+                className="h-[45px] w-[45px] rounded-full object-cover object-center"
+              />
+            )}
+
+            <div className="max-w-xs">
+              <div
+                className={`px-4 py-2 rounded-2xl text-sm whitespace-pre-line ${
+                  msg.sender === "me"
+                    ? "bg-brand-600 text-white rounded-br-none"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none"
+                }`}
+              >
+                {msg.text}
+              </div>
+              <div
+                className={`text-[11px] mt-1 ${
+                  msg.sender === "me" ? "text-right" : "text-left"
+                } text-gray-500 dark:text-gray-400`}
+              >
+                {msg.name} • {msg.time}
+              </div>
+            </div>
+
+            {msg.sender === "me" && (
+              <Image
+                src={msg.avatar}
+                alt={msg.name}
+                width={100}
+                height={100}
+                className="h-[45px] w-[45px] rounded-full object-cover object-center"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+        className="flex gap-2 pt-4 border-t dark:border-gray-700 mt-6"
+      >
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Escreve uma mensagem..."
+          className="flex-1 rounded-xl border px-4 py-2 text-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+        />
+        <button
+          type="submit"
+          className="rounded-xl bg-brand-600 px-4 py-2 text-sm text-white hover:bg-brand-700"
+        >
+          Enviar
+        </button>
+      </form>
+    </div>
+  );
+}

@@ -19,7 +19,8 @@ import {
   Building2,
   UsersRound,
   ClipboardPen,
-  Inbox
+  Inbox,
+  MessageSquare
 } from "../icons/index";
 
 type Role = "jethire-admin" | "admin" | "manager" | "recruiter";
@@ -63,6 +64,12 @@ const navItems: NavItem[] = [
     name: "Editar empresa",
     roles: ["admin", "manager", "recruiter"],
     path: "/company/edit",
+  },
+  {
+    icon: <MessageSquare />,
+    name: "Chat",
+    roles: ["admin", "manager", "recruiter"],
+    path: "/chat",
   },
   {
     icon: <Building2 />,

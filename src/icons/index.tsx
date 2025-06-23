@@ -66,8 +66,10 @@ import Loader from "./loader-circle.svg";
 import ClipboardPen from "./clipboard-pen.svg";
 import FilePlus2 from "./file-plus-2.svg";
 import Inbox from "./inbox.svg";
+import MessageSquare from "./message-square-text.svg"
 
 export {
+  MessageSquare,
   Inbox,
   FilePlus2,
   ClipboardPen,
