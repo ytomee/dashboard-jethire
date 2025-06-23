@@ -5,6 +5,7 @@ import companyRequest from "@/models/companyRequest";
 import Company from "@/models/company";
 import { Resend } from "resend";
 import CredentialsEmail from "@/emails/CredentialsEmail";
+import { logEvent } from "@/lib/logEvent";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -83,6 +84,13 @@ export async function POST(req: NextRequest) {
           username,
           password,
         }),
+      });
+
+      await logEvent({
+        message: `A empresa "${newCompany.name}" foi criada.`,
+        type: "company",
+        userId: newCompany.team[0]._id,
+        level: "info",
       });
 
       return NextResponse.json({ success: true, companyId: newCompany._id });

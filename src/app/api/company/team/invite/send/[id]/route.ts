@@ -5,6 +5,7 @@ import crypto from "crypto";
 import moment from "moment";
 import { Resend } from "resend";
 import { InviteEmail } from "@/emails/InviteEmail";
+import { logEvent } from "@/lib/logEvent";
 
 interface PendingInvitation {
   email: string;
@@ -75,6 +76,13 @@ export async function POST(req: NextRequest) {
         teamName: company.name,
         inviteLink: inviteLink,
       }),
+    });
+
+    await logEvent({
+      message: `Convite enviado para ${email} na empresa "${company.name}".`,
+      type: "company",
+      userId: id,
+      level: "info",
     });
 
     return NextResponse.json({

@@ -13,7 +13,6 @@ interface CandidateUser {
     country?: string;
     phone?: string;
     pfp?: string;
-    contactEmail?: string;
   };
 }
 
@@ -57,7 +56,7 @@ export async function GET(req: NextRequest) {
       city: user.profile?.city || "",
       country: user.profile?.country || "",
       phone: user.profile?.phone || "",
-      email: user.profile?.contactEmail || user.email,
+      email: user.email,
       pfp: user.profile?.pfp || "",
       profileUrl: `https://jethire.pt/profile/${user._id}`,
     }));

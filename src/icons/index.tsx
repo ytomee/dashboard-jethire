@@ -64,9 +64,11 @@ import Refresh from "./refresh-ccw.svg";
 import Logout from "./log-out.svg";
 import Loader from "./loader-circle.svg";
 import ClipboardPen from "./clipboard-pen.svg";
-import FilePlus2 from "./file-plus-2.svg"
+import FilePlus2 from "./file-plus-2.svg";
+import Inbox from "./inbox.svg";
 
 export {
+  Inbox,
   FilePlus2,
   ClipboardPen,
   Loader,

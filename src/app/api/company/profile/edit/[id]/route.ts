@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Company from "@/models/company";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
+import { logEvent } from "@/lib/logEvent";
 import mongoose from "mongoose";
 
 export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
@@ -65,6 +66,13 @@ export async function POST(req: NextRequest, context: { params: Promise<{ id: st
     company.description = descriptions;
 
     await company.save();
+
+    await logEvent({
+      message: `O perfil da empresa "${company.name}" foi atualizado.`,
+      type: "company",
+      userId: id,
+      level: "info",
+    });
 
     return NextResponse.json({ message: "Perfil atualizado com sucesso" });
   } catch (error) {

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Metrics } from "@/components/dashboard/Metrics";
 import React from "react";
-import MonthlyTarget from "@/components/dashboard/MonthlyTarget";
-import MonthlySalesChart from "@/components/dashboard/MonthlySalesChart";
 import StatisticsChart from "@/components/dashboard/StatisticsChart";
-import DemographicCard from "@/components/dashboard/DemographicCard";
+import UsersChart from "@/components/dashboard/UsersChart";
+import OfferChart from "@/components/dashboard/OfferChart";
+import LogsTable from "@/components/dashboard/LogsTable";
 
 export const metadata: Metadata = {
   title: "JetHire | Dashboard",
@@ -19,20 +19,13 @@ export default function Ecommerce() {
       </div>
 
       <div className="col-span-12 grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <MonthlySalesChart />
-        <MonthlySalesChart />
+        <UsersChart />
+        <OfferChart />
       </div>
 
       <div className="col-span-12">
         <StatisticsChart />
-      </div>
-
-      <div className="col-span-12 xl:col-span-7">
-        <DemographicCard />
-      </div>
-
-      <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget />
+        <LogsTable />
       </div>
     </div>
   );

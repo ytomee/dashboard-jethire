@@ -18,7 +18,8 @@ import {
   TableIcon,
   Building2,
   UsersRound,
-  ClipboardPen
+  ClipboardPen,
+  Inbox
 } from "../icons/index";
 
 type Role = "jethire-admin" | "admin" | "manager" | "recruiter";
@@ -45,7 +46,19 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/",
   },
-    {
+  {
+    icon: <UsersRound />,
+    name: "Utilizadores",
+    roles: ["jethire-admin"],
+    path: "/users",
+  },
+  {
+    icon: <Inbox />,
+    name: "Caixa de entrada",
+    roles: ["jethire-admin"],
+    path: "/inbox",
+  },
+  {
     icon: <Building2 />,
     name: "Editar empresa",
     roles: ["admin", "manager", "recruiter"],

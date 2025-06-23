@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/dbConnect';
 import CompanyRequest from '@/models/companyRequest';
+import { logEvent } from '@/lib/logEvent';
 
 export async function PATCH(req: NextRequest) {
   try {
@@ -25,6 +26,12 @@ export async function PATCH(req: NextRequest) {
         { status: 404 }
       );
     }
+
+    await logEvent({
+      message: `Pedido de registo da empresa "${company.companyName}" foi rejeitado.`,
+      type: "admin",
+      level: "warn",
+    });
 
     return NextResponse.json({
       message: 'Empresa rejeitada com sucesso',

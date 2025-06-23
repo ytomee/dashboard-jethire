@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { Resend } from "resend";
 import { CredentialsEmail } from "@/emails/CredentialsEmail";
 import dbConnect from "@/lib/dbConnect";
+import { logEvent } from "@/lib/logEvent";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -89,6 +90,13 @@ export async function POST(req: NextRequest) {
         username: newMember.user,
         password,
       }),
+    });
+
+    await logEvent({
+      message: `Novo membro ${pendingMember.name} (${pendingMember.email}) adicionado à empresa "${company.name}".`,
+      type: "company",
+      userId: undefined,
+      level: "info",
     });
 
     return NextResponse.json({ success: true, message: "Conta criada e email enviado." });

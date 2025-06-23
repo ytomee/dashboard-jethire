@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
+import { logEvent } from "@/lib/logEvent";
 
 import dbConnect from "@/lib/dbConnect";
 
@@ -33,6 +34,13 @@ export async function POST(req: NextRequest) {
       salaryMax: Number(salaryMax),
     },
     company: company._id,
+  });
+
+  await logEvent({
+    message: `A empresa "${company.name}" criou uma nova oferta: ${newOffer.role}`,
+    type: "company",
+    userId: session?.user?.id,
+    level: "info",
   });
 
   return NextResponse.json(newOffer, { status: 201 });
