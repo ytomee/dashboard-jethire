@@ -46,7 +46,7 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    if (!companyId || !session?.user?.email) return;
+    if (!companyId || !session?.user?.id) return;
 
     const unsubscribe = listenForMessages(companyId, (msg) => {
       const isMe = msg.senderId === session?.user?.id;
