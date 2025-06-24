@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { sendMessage, listenForMessages } from "@/services/chatService";
 
 interface Message {
-  id: number;
+  id?: string;
   sender: "me" | "other";
   name: string;
   avatar: string;
@@ -13,41 +15,67 @@ interface Message {
 }
 
 export default function ChatPage() {
-  const [message, setMessage] = useState("");
+  const { data: session } = useSession();
 
-const messages: Message[] = [
-  {
-    id: 1,
-    sender: "other",
-    name: "Harvey Specter",
-    avatar: "https://res.cloudinary.com/dngcufwm8/image/upload/v1750243640/pfp/axbqouuzhhst19sznvth.png",
-    text: "Excuses don’t win championships.",
-    time: "10:01",
-  },
-  {
-    id: 2,
-    sender: "me",
-    name: "Tu",
-    avatar: "https://res.cloudinary.com/dngcufwm8/image/upload/v1744222363/pfp/ufwnrhwcvgutrbzulwpg.jpg",
-    text: "Oh yeah, did Michael Jordan tell you that?",
-    time: "10:02",
-  },
-  {
-    id: 3,
-    sender: "other",
-    name: "Harvey Specter",
-    avatar: "https://res.cloudinary.com/dngcufwm8/image/upload/v1750243640/pfp/axbqouuzhhst19sznvth.png",
-    text: "No, I told him that.",
-    time: "10:02",
-  },
-];
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [companyId, setCompanyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCompanyId = async () => {
+      try {
+        const res = await fetch("/api/chat/session");
+        if (!res.ok) {
+          console.error("Erro ao obter companyId:", res.status);
+          return;
+        }
+
+        const data = await res.json();
+        if (data.companyId) {
+          setCompanyId(data.companyId);
+        } else {
+          console.warn("companyId não recebido", data);
+        }
+      } catch (err) {
+        console.error("Erro ao carregar companyId:", err);
+      }
+    };
+
+    fetchCompanyId();
+  }, []);
+
+  useEffect(() => {
+    if (!companyId) return;
+
+    const unsubscribe = listenForMessages(companyId, (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
+
+    return () => unsubscribe();
+  }, [companyId]);
+
+  function handleSend(e: React.FormEvent) {
+    e.preventDefault();
+    if (!message.trim() || !companyId || !session?.user) return;
+
+    const newMessage: Message = {
+      sender: "me",
+      name: session.user.name || "Desconhecido",
+      avatar: session.user.image || "/images/default/user.png",
+      text: message,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    sendMessage(companyId, newMessage);
+    setMessage("");
+  }
 
   return (
     <div className="h-[calc(100vh-170px)] flex flex-col justify-between rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
       <div className="flex-1 overflow-y-auto space-y-4">
-        {messages.map((msg) => (
+        {messages.map((msg, index) => (
           <div
-            key={msg.id}
+            key={index}
             className={`flex items-center gap-2 ${
               msg.sender === "me" ? "justify-end" : "justify-start"
             }`}
@@ -77,7 +105,7 @@ const messages: Message[] = [
                   msg.sender === "me" ? "text-right" : "text-left"
                 } text-gray-500 dark:text-gray-400`}
               >
-                {msg.name} • {msg.time}
+                {msg.sender === "me" ? "Eu" : msg.name} • {msg.time}
               </div>
             </div>
 
@@ -95,9 +123,7 @@ const messages: Message[] = [
       </div>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
+        onSubmit={handleSend}
         className="flex gap-2 pt-4 border-t dark:border-gray-700 mt-6"
       >
         <input
@@ -110,6 +136,7 @@ const messages: Message[] = [
         <button
           type="submit"
           className="rounded-xl bg-brand-600 px-4 py-2 text-sm text-white hover:bg-brand-700"
+          disabled={!session?.user || !companyId}
         >
           Enviar
         </button>
