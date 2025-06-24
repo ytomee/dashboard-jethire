@@ -1,4 +1,3 @@
-// Exemplo em Next.js 13/14 (app router)
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";

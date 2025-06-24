@@ -6,16 +6,9 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxCubeIcon,
-  CalenderIcon,
   ChevronDownIcon,
   Dashboard,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
   Building2,
   UsersRound,
   ClipboardPen,
@@ -48,12 +41,6 @@ const navItems: NavItem[] = [
     path: "/",
   },
   {
-    icon: <UsersRound />,
-    name: "Utilizadores",
-    roles: ["jethire-admin"],
-    path: "/users",
-  },
-  {
     icon: <Inbox />,
     name: "Caixa de entrada",
     roles: ["jethire-admin"],
@@ -61,8 +48,31 @@ const navItems: NavItem[] = [
   },
   {
     icon: <Building2 />,
+    name: "Empresas",
+    roles: ["jethire-admin"],
+    subItems: [
+      {
+        name: "Lista",
+        path: "/company/list",
+        roles: ["jethire-admin"],
+      },
+      {
+        name: "Registos",
+        path: "/company/requests",
+        roles: ["jethire-admin"],
+      },
+    ],
+  },
+  {
+    icon: <UsersRound />,
+    name: "Utilizadores",
+    roles: ["jethire-admin"],
+    path: "/users",
+  },
+  {
+    icon: <Building2 />,
     name: "Editar empresa",
-    roles: ["admin", "manager", "recruiter"],
+    roles: ["admin"],
     path: "/company/edit",
   },
   {
@@ -72,26 +82,9 @@ const navItems: NavItem[] = [
     path: "/chat",
   },
   {
-    icon: <Building2 />,
-    name: "Empresas",
-    roles: ["jethire-admin", "admin"],
-    subItems: [
-      {
-        name: "Lista",
-        path: "/company/list",
-        roles: ["jethire-admin", "admin"],
-      },
-      {
-        name: "Registos",
-        path: "/company/requests",
-        roles: ["jethire-admin", "admin"],
-      },
-    ],
-  },
-  {
     icon: <UsersRound />,
     name: "Equipa",
-    roles: ["admin", "manager", "recruiter"],
+    roles: ["admin", "manager"],
     subItems: [
       { name: "Ver equipa", path: "/team/list" },
       { name: "+ Adicionar", path: "/team/add" },
@@ -106,68 +99,9 @@ const navItems: NavItem[] = [
       { name: "+ Adicionar", path: "/offer/add" },
     ],
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-    roles: ["jethire-admin", "admin", "manager"],
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    roles: ["jethire-admin", "admin", "manager", "recruiter"],
-    subItems: [{ name: "Form Elements", path: "/form-elements" }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    roles: ["jethire-admin", "admin"],
-    subItems: [{ name: "Basic Tables", path: "/basic-tables" }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    roles: ["jethire-admin", "admin"],
-    subItems: [
-      { name: "Blank Page", path: "/blank" },
-      { name: "404 Error", path: "/error-404" },
-    ],
-  },
 ];
 
-const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    roles: ["jethire-admin", "admin"],
-    subItems: [
-      { name: "Line Chart", path: "/line-chart" },
-      { name: "Bar Chart", path: "/bar-chart" },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    roles: ["jethire-admin", "admin"],
-    subItems: [
-      { name: "Alerts", path: "/alerts" },
-      { name: "Avatar", path: "/avatars" },
-      { name: "Badge", path: "/badge" },
-      { name: "Buttons", path: "/buttons" },
-      { name: "Images", path: "/images" },
-      { name: "Videos", path: "/videos" },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    roles: ["jethire-admin", "admin"],
-    subItems: [
-      { name: "Sign In", path: "/signin" },
-      { name: "Sign Up", path: "/signup" },
-    ],
-  },
-];
+const othersItems: NavItem[] = [];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
