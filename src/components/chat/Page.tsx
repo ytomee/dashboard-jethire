@@ -7,7 +7,8 @@ import { sendMessage, listenForMessages } from "@/services/chatService";
 
 interface Message {
   id?: string;
-  sender: "me" | "other";
+  sender?: "me" | "other";
+  senderId: string;
   name: string;
   avatar: string;
   text: string;
@@ -45,21 +46,28 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    if (!companyId) return;
+    if (!companyId || !session?.user?.email) return;
 
     const unsubscribe = listenForMessages(companyId, (msg) => {
-      setMessages((prev) => [...prev, msg]);
+      const isMe = msg.senderId === session?.user?.id;
+
+      const formattedMessage: Message = {
+        ...msg,
+        sender: isMe ? "me" : "other",
+      };
+
+      setMessages((prev) => [...prev, formattedMessage]);
     });
 
     return () => unsubscribe();
-  }, [companyId]);
+  }, [companyId, session?.user?.id]);
 
   function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!message.trim() || !companyId || !session?.user) return;
 
     const newMessage: Message = {
-      sender: "me",
+      senderId: session.user.id,
       name: session.user.name || "Desconhecido",
       avatar: session.user.image || "/images/default/user.png",
       text: message,

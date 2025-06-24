@@ -32,6 +32,7 @@ export function Info({
           value={name}
           placeholder="Jet Hire"
           onChange={e => onChange("name", e.target.value)}
+          disabled
         />
       </div>
       <div className="col-span-12 md:col-span-5">

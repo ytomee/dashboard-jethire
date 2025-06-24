@@ -3,7 +3,7 @@ import { db } from "@/lib/firebase";
 import { ref, push, onChildAdded, off, DataSnapshot } from "firebase/database";
 
 export interface ChatMessage {
-  sender: "me" | "other";
+  senderId: string;
   name: string;
   avatar: string;
   text: string;
