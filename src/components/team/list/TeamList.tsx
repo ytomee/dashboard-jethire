@@ -23,7 +23,6 @@ export default function TeamList({ searchTerm }: { searchTerm: string }) {
   const { data: session } = useSession();
   const [team, setTeam] = useState<CompanyMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [companyPfp, setCompanyPfp] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -33,7 +32,6 @@ export default function TeamList({ searchTerm }: { searchTerm: string }) {
         const res = await fetch(`/api/company/team/list/${session.user.id}`);
         const data = await res.json();
         setTeam(data.team);
-        setCompanyPfp(data.pfp);
         setLoading(false);
       } catch (error) {
         setLoading(false);
