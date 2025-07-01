@@ -10,7 +10,10 @@ interface CompanyMember {
   name: string;
   email: string;
   role: "admin" | "manager" | "recruiter";
-  pfp?: string;
+  logo: {
+    secure_url: string;
+    public_id: string;
+  };
   city?: string;
   country?: string;
   phone?: string;
@@ -64,7 +67,7 @@ export default function TeamList({ searchTerm }: { searchTerm: string }) {
         </p>
       ) : filteredTeam.length > 0 ? (
         filteredTeam.map((member, index) => (
-          <TeamCard key={index} company={member} companyPfp={companyPfp} />
+          <TeamCard key={index} company={member} />
         ))
       ) : (
         <p className="text-gray-500 dark:text-gray-400 col-span-full">
@@ -77,12 +80,10 @@ export default function TeamList({ searchTerm }: { searchTerm: string }) {
 
 function TeamCard({
   company,
-  companyPfp,
 }: {
   company: CompanyMember;
-  companyPfp: string | null;
 }) {
-  const profileImage = company.pfp || companyPfp || "/images/default/user.png";
+  const profileImage = company.logo?.secure_url || "/images/default/user.png";
 
   return (
     <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
@@ -92,7 +93,7 @@ function TeamCard({
           height={200}
           src={profileImage}
           alt="Foto de perfil"
-          className="w-20 h-20 rounded-full object-cover border border-gray-300 dark:border-neutral-700"
+          className="w-17 h-17 rounded-full object-cover border border-gray-300 dark:border-neutral-700"
         />
         <div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">

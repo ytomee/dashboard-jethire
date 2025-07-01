@@ -4,7 +4,7 @@ const companyRequestSchema = new Schema(
   {
     companyName: { type: String, required: true },
     nif: { type: String, required: true },
-    foundedYear: { type: Number },
+    foundationYear: { type: Number },
     country: String,
     city: String,
     address: String,

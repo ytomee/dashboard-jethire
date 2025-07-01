@@ -3,7 +3,7 @@ import { Award, MapPin, MonitorSmartphone, UserRoundSearch, CircleCheck, CircleX
 interface CompanyRequest {
   companyName: string;
   nif: string;
-  foundedYear: string;
+  foundationYear: string;
   status: string;
   country: string;
   city: string;
@@ -35,7 +35,7 @@ export const CompanyCard = ( { company, statusMap, onValidate, onReject }: Compa
         <h3 className="mb-2 flex gap-2 text-lg font-semibold text-gray-700 dark:text-white"><Award className="size-6" />Dados da Empresa</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-y-2 gap-x-6 text-base text-gray-700 dark:text-gray-300">
           <div><span className="font-medium dark:text-white">NIF:</span> {company.nif}</div>
-          <div><span className="font-medium dark:text-white">Ano de fundação:</span> {company.foundedYear}</div>
+          <div><span className="font-medium dark:text-white">Ano de fundação:</span> {company.foundationYear}</div>
           <div><span className="font-medium dark:text-white">Estado:</span> {statusMap[company.status]}</div>
         </div>
       </div>

@@ -380,7 +380,7 @@ const AppSidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? "Others" : <HorizontaLDots />}
+                {isExpanded || isHovered || isMobileOpen ? "" : <HorizontaLDots />}
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>

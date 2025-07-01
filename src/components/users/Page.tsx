@@ -98,7 +98,7 @@ export default function UsersPage() {
         </div>
       </Modal>
 
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
+      <div className="rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
         <Input
           className="mb-8"
           placeholder="Pesquisar por nome, email ou função..."
@@ -119,11 +119,11 @@ export default function UsersPage() {
               >
                 <div className="flex items-center gap-4">
                   <Image
-                    height={60}
-                    width={60}
+                    height={250}
+                    width={250}
                     src={user.profile?.pfp || "/images/default/user.png"}
                     alt="Foto de perfil"
-                    className="w-20 h-20 rounded-full object-cover border-3 border-brand"
+                    className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
                   />
                   <div className="flex flex-col">
                     <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">

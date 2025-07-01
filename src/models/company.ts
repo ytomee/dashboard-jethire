@@ -77,7 +77,7 @@ const companySchema = new Schema(
 
     field: String, 
     workType: String, 
-    foundationYear: Number,
+    foundationYear: String,
 
     tags: { type: [String], default: [] },
     remote: { type: String, default: "" },

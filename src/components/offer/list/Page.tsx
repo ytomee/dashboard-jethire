@@ -80,7 +80,7 @@ export default function ListOfferPage() {
   .sort((a, b) => (a.isActive === b.isActive ? 0 : a.isActive ? -1 : 1));
 
   return (
-    <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
+    <div className="rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-8 xl:py-8">
       <Input placeholder="Pesquise aqui..." value={search} onChange={(e) => setSearch(e.target.value)} />
 
       {loading ? (
@@ -123,7 +123,7 @@ export default function ListOfferPage() {
                 ? `${offer.salary.salaryMin}€`
                 : "Não definido"}
               </p>
-              <div className="flex flex-wrap gap-2 mb-9">
+              <div className="flex flex-wrap gap-2 mb-12">
                 {offer.tags.map((tag, index) => (
                   <span
                     key={index}

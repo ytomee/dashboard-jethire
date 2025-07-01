@@ -9,10 +9,11 @@ interface Company {
   city: string;
   country: string;
   address: string;
-  field: string;
-  workType: string;
   foundationYear: string;
-  pfp: string;
+  logo: {
+    secure_url: string;
+    public_id: string;
+  };
   contact: {
     email: string;
     phone: string;
@@ -21,17 +22,17 @@ interface Company {
 }
 
 export default function CompanyCard({ company }: { company: Company }) {
-  const logo = company.pfp || "/images/logo/logo-icon.svg";
+  const logo = company.logo?.secure_url || "/images/logo/logo-icon.svg";
 
   return (
     <div className="flex flex-col border dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
       <div className="flex items-center gap-4">
         <Image
-          width={0}
-          height={0}
+          width={100}
+          height={100}
           src={logo}
           alt="Logotipo da empresa"
-          className="w-20 h-20 p-3 rounded-full object-cover bg-neutral-100 border border-gray-300 dark:border-neutral-700"
+          className="w-17 h-17 p-2 rounded-full object-cover bg-neutral-100 border border-gray-300 dark:border-neutral-700"
         />
         <div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{company.name}</h2>
@@ -40,8 +41,6 @@ export default function CompanyCard({ company }: { company: Company }) {
       </div>
 
       <div className="mt-4 space-y-1 text-sm text-gray-700 dark:text-gray-300">
-        <Info label="Área" value={company.field} />
-        <Info label="Tipo de trabalho" value={company.workType} />
         <Info label="Fundada em" value={company.foundationYear} />
         <Info label="Cidade" value={company.city} />
         <Info label="País" value={company.country} />

@@ -9,7 +9,7 @@ interface Company {
   _id: string;
   companyName: string;
   nif: string;
-  foundedYear: string;
+  foundationYear: string;
   status: string;
   country: string;
   city: string;
@@ -122,7 +122,7 @@ export const Requests = ({ searchTerm }: Props) => {
     const valuesToSearch = [
       company.companyName,
       company.nif,
-      company.foundedYear.toString(),
+      company.foundationYear,
       company.status,
       company.country,
       company.city,

@@ -10,10 +10,11 @@ interface Company {
   city: string;
   country: string;
   address: string;
-  field: string;
-  workType: string;
   foundationYear: string;
-  pfp: string;
+  logo: {
+    secure_url: string;
+    public_id: string;
+  };
   contact: {
     email: string;
     phone: string;
@@ -48,8 +49,6 @@ export default function CompanyList({ searchTerm }: { searchTerm: string }) {
             company.city,
             company.country,
             company.address,
-            company.field,
-            company.workType,
             company.foundationYear,
             company.contact.email,
             company.contact.phone,
