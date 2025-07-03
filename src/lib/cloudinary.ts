@@ -12,7 +12,7 @@ async function deleteFromCloudinary(publicId: string) {
   }
 }
 
-async function uploadToCloudinary(buffer: Buffer) {
+async function uploadToCloudinaryPFP(buffer: Buffer) {
   return new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
@@ -33,5 +33,26 @@ async function uploadToCloudinary(buffer: Buffer) {
   });
 }
 
-export { deleteFromCloudinary, uploadToCloudinary };
+async function uploadToCloudinaryBanner(buffer: Buffer) {
+  return new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream(
+        {
+          folder: "banner",
+          resource_type: "image",
+          overwrite: true,
+        },
+        (error, result) => {
+          if (error || !result) {
+            reject(error);
+          } else {
+            resolve({ secure_url: result.secure_url, public_id: result.public_id });
+          }
+        }
+      )
+      .end(buffer);
+  });
+}
+
+export { deleteFromCloudinary, uploadToCloudinaryPFP, uploadToCloudinaryBanner };
 export default cloudinary;

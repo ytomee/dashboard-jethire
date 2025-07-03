@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Company from "@/models/company";
-import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
+import { uploadToCloudinaryPFP, uploadToCloudinaryBanner, deleteFromCloudinary } from "@/lib/cloudinary";
 import { logEvent } from "@/lib/logEvent";
 import mongoose from "mongoose";
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest, context: { params: Promise<{ id: st
       }
       const arrayBuffer = await bannerFile.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      const uploaded = await uploadToCloudinary(buffer);
+      const uploaded = await uploadToCloudinaryBanner(buffer);
       company.banner = uploaded;
     }
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest, context: { params: Promise<{ id: st
       }
       const arrayBuffer = await logoFile.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      const uploaded = await uploadToCloudinary(buffer);
+      const uploaded = await uploadToCloudinaryPFP(buffer);
       company.logo = uploaded;
     }
 

@@ -3,7 +3,7 @@ import dbConnect from "@/lib/dbConnect";
 import Admin from "@/models/admin";
 import Company from "@/models/company";
 import mongoose from "mongoose";
-import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
+import { uploadToCloudinaryPFP, deleteFromCloudinary } from "@/lib/cloudinary";
 
 export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   await dbConnect();
@@ -40,7 +40,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
         await deleteFromCloudinary(teamMember.logo.public_id);
       }
 
-      const uploadResult = await uploadToCloudinary(buffer);
+      const uploadResult = await uploadToCloudinaryPFP(buffer);
 
       teamMember.logo.secure_url = uploadResult.secure_url;
       teamMember.logo.public_id = uploadResult.public_id;
@@ -59,7 +59,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       await deleteFromCloudinary(admin.logo.public_id);
     }
 
-    const uploadResult = await uploadToCloudinary(buffer);
+    const uploadResult = await uploadToCloudinaryPFP(buffer);
 
     admin.logo.secure_url = uploadResult.secure_url;
     admin.logo.public_id = uploadResult.public_id;
