@@ -53,6 +53,7 @@ export function Descriptions({
           className="mt-2"
           onClick={addDescription}
           size="sm"
+          type="button"
           variant="primary"
           startIcon={<PlusIcon />}
         >
